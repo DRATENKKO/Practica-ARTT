@@ -88,6 +88,7 @@ def memorama(request):
     data = {
         'form':Resultado_Form,
     }
+    print(request.user.id)
     if request.method == 'POST':
         formulario = Resultado_Form(data=request.POST)
         if formulario.is_valid():
@@ -95,7 +96,7 @@ def memorama(request):
             post.resultado_1 = request.POST["Resultado_1"]
             post.resultado_2 = request.POST["Resultado_2"]
             post.resultado_3 = request.POST["Resultado_3"]
-            post.usuario_id = request.user.id
+            post.id_usuario_id = request.user.id
             post.save()
             formulario.save()
         else:
