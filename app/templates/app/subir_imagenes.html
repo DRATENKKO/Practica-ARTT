@@ -1,0 +1,58 @@
+﻿{% extends 'app/base.html' %}
+{%load static %}
+
+
+{% block contenido %}
+<link type="text/css" rel="stylesheet" href="{% static 'app/css/carga_imagenes.css' %}">
+
+<div id="myModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="caja">
+                    <div class="drop-area">
+                        <h2>Arrastra y suelta imágenes</h2>
+                        <span>O</span>
+                        <button>Selecciona Imagenes</button>
+                        <input type="file" name="" id="input-file" hidden multiple>
+                    </div>
+                    <div class="miniatura">
+                        <div class="preview" id="preview"></div>
+                    </div>
+
+                    {% load crispy_forms_tags %}
+                    <form action="" method="post">
+                        <div style="display: none;">
+
+                            {% csrf_token %}
+                            {{form | crispy}}
+
+                        </div>
+
+                    </form>
+
+                    <div id="btn-guardar">
+                        <button type="submit" class="boton-restart">Subir Imagenes</button>
+                    </div>
+                    {{ mensaje }}
+
+
+
+
+
+
+
+
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static 'app/js/carga-imagenes.js' %}"></script>
+{% endblock %}
