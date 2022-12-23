@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>RTDParkinsón</title>
+    <title>ArtMind, arte terapia</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     {% load static %}
@@ -18,17 +18,17 @@
             <header id="header" class="container">
                 <!-- Logo -->
                 <div id="logo">
-                    <h1><a href="{% url 'index' %}">RTDP</a></h1>
-                    <span>Recursos Terapeuticos Digitales Para Parkinson</span>
+                    <h1><a href="{% url 'index' %}">ArtMind</a></h1>
+                    <span>Recursos de Arterapia para Personas Mayores</span>
                 </div>
                 <!-- Nav -->
                 <nav id="nav">
                     <ul>
                         <li><a href="">Juegos</a>
                             <ul>
-                                <li><a href="{% url 'memorama' %}">Memorama</a></li>
+                                <li><a href="{% url 'memorama' %}">Memorice</a></li>
                             </ul>
-                        <li><a href="{% url 'subir_imagenes' %}">Subir imagenes</a></li>
+                        <li><a href="{% url 'subir_imagenes' %}">Subir Imagenes</a></li>
                         </li>
                         {% if user.is_authenticated %}
                         <li class="current">

@@ -16,4 +16,7 @@ admin.site.register(Galeria)
 admin.site.register(Tipo_juego)
 admin.site.register(Juego)
 admin.site.register(Resultado_juego)
+admin.site.register(Usuario)
+admin.site.register(Tipo_usuario)
+admin.site.register(Terapista)
 
