@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'crispy_forms',
 ]
 
+#login bypass
+LOGIN_REDIRECT_URL='/post_login/'
+
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
