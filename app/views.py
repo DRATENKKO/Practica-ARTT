@@ -85,6 +85,8 @@ def login(request):
 
 
 def memorama(request):
+    get_juegos = Juego.objects.get(descripcion="Juego de memoria")
+    print(get_juegos.descripcion)
     data = {
         'form':Resultado_Form,
     }
@@ -97,6 +99,7 @@ def memorama(request):
             post.resultado_2 = request.POST["Resultado_2"]
             post.resultado_3 = request.POST["Resultado_3"]
             post.id_usuario_id = request.user.id
+            post.id_juego_id = get_juegos.id
             post.save()
             formulario.save()
         else:
