@@ -1,6 +1,7 @@
 from django import forms
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 # MEMORICE
@@ -33,7 +34,22 @@ class Resultado_Form(forms.ModelForm):
         fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
         
 class CustomUserCreationForm(UserCreationForm):
-    pass
+    class Meta:
+        model = User
+        fields = ['username',"first_name","last_name","email","password1","password2"]
+
+
+# ['username', 'password1','first_name', 'last_name','email','id_telegram',]
+
+    # id_usuario = models.AutoField(primary_key=True)
+    # #password = models.CharField(max_length=100)
+    # #username = models.CharField(max_length=100)
+    # #first_name = models.CharField(max_length=100)
+    # #last_name = models.CharField(max_length=100)
+    ## email = models.CharField(max_length=100)
+    # #id_telegram = models.CharField(max_length=100)
+    # id_tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete=models.CASCADE)
+
 
 # class MemoriceForm(forms.ModelForm):
 #     acierto = forms.CharField(label='Cantidad de aciertos', widget=forms.TextInput(

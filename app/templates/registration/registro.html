@@ -24,6 +24,7 @@
                             <a href="{% url 'login' %}">volver al login</a>
                             <input class="btn btn-success float-right" type="submit" value="registrar">
                         </form>
+                        {% csrf_token %}
                     </div>
                 </div>
             </div>

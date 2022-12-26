@@ -81,8 +81,6 @@ def index(request):
     return render(request, 'app/index.html')
 
 
-def login(request):
-    return render(request, 'app/login.html')
 
 def registro(request):
     data = {
@@ -96,7 +94,7 @@ def registro(request):
             User = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
             login(request, User)
             messages.success(request, "Te has registrado correctamente")
-            return redirect(to="home")
+            return redirect(to="index")
         else:
             formulario = CustomUserCreationForm()
     

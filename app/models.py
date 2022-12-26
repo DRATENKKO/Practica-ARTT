@@ -46,24 +46,21 @@ class Tipo_usuario(models.Model):
     descripcion = models.CharField(max_length=100)
 
     def __str__(self):
-        return str(self.id_tipo_usuario)
+        return str(self.nombre_tipo_usuario)
 
 #USUARIO
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
-    password = models.CharField(max_length=100)
-    issuperuser = models.BooleanField(default=False)
     username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
     id_telegram = models.CharField(max_length=100)
     id_tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.id_usuario)
+        return str(self.username)
 
 #PACIENTE
 class Paciente(models.Model):
