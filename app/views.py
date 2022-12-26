@@ -11,8 +11,11 @@ from django.views.generic import View
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.db import connection
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 import json
 
+# CREACION DE VISTAS
 
 def grilla6x6(request):
     data = {
@@ -80,6 +83,24 @@ def index(request):
 
 def login(request):
     return render(request, 'app/login.html')
+
+def registro(request):
+    data = {
+        'form': CustomUserCreationForm,
+    }
+    
+    if request.method == 'POST':
+        formulario = CustomUserCreationForm(data=request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            User = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
+            login(request, User)
+            messages.success(request, "Te has registrado correctamente")
+            return redirect(to="home")
+        else:
+            formulario = CustomUserCreationForm()
+    
+    return render(request, 'registration/registro.html', data)
 ###################### MEMORICE #######################
 ################ NO TOCAR DE MOMENTO ##################
 

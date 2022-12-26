@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from django.contrib.auth.forms import UserCreationForm
 
 
 # MEMORICE
@@ -30,6 +31,9 @@ class Resultado_Form(forms.ModelForm):
     class Meta:
         model = Resultado_juego
         fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
+        
+class CustomUserCreationForm(UserCreationForm):
+    pass
 
 # class MemoriceForm(forms.ModelForm):
 #     acierto = forms.CharField(label='Cantidad de aciertos', widget=forms.TextInput(
@@ -62,3 +66,5 @@ class GaleriaForm(forms.ModelForm):
     class Meta:
         model = Galeria
         fields = ('imagenes',)
+
+

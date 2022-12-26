@@ -81,7 +81,7 @@ class Paciente(models.Model):
     def __str__(self):
         return str(self.id_enfermera)
 
-#terapista
+#TERAPISTA
 class Terapista(models.Model):
     id_enfermera = models.AutoField(primary_key=True)
     rut_enfermera = models.CharField(max_length=100)
