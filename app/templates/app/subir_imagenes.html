@@ -5,35 +5,19 @@
 {% block contenido %}
 <link type="text/css" rel="stylesheet" href="{% static 'app/css/carga_imagenes.css' %}">
 
-<div id="myModal" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="caja">
-                    <div class="drop-area">
-                        <h2>Arrastra y suelta imágenes</h2>
-                        <span>O</span>
-                        <button>Selecciona Imagenes</button>
-                        <input type="file" name="" id="input-file" hidden multiple>
-                    </div>
-                    <div class="miniatura">
-                        <div class="preview" id="preview"></div>
-                    </div>
-
-                    {% load crispy_forms_tags %}
-                    <form action="" method="post">
-                        <div style="display: none;">
-
-                            {% csrf_token %}
-                            {{form | crispy}}
-
-                        </div>
-
-                    </form>
-
-                    <div id="btn-guardar">
-                        <button type="submit" class="boton-restart">Subir Imagenes</button>
-                    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+  <input type="file" name="images" multiple>
+  <button type="submit" href="{% url 'index' %}">Send</button>
+</form>    
+</body>
+{% comment %} href="{% url 'index' %}" {% endcomment %}
                     {{ mensaje }}
 
 

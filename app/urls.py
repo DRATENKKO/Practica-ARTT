@@ -12,4 +12,5 @@ urlpatterns = [
     path('Juegos/',JuegosView.as_view(), name="JuegosView_list"),
     path('Juegos/<int:id>',JuegosView.as_view(), name="JuegosView_process"),
     path('registro/', registro, name="registro"),
+    path('api/', api, name="api"),
 ]

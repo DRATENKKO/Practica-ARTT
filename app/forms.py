@@ -79,6 +79,11 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class GaleriaForm(forms.ModelForm):
+    imagenes = forms.ImageField(label='Imagenes', widget=forms.FileInput(
+        attrs={
+            'placeholder': 'Ingresa imagenes',
+            'id': 'imagen'
+        }))
     class Meta:
         model = Galeria
         fields = ('imagenes',)

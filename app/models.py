@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
+# get current u
 
 # Create your models here.
 
@@ -112,6 +113,7 @@ class Resultado_juego(models.Model):
     resultado_4 = models.CharField(max_length=100, blank=True, null=True)
     resultado_5 = models.CharField(max_length=100, blank=True, null=True)
     id_usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    timestampp = models.DateTimeField(auto_now_add=True)
     id_juego = models.ForeignKey(Juego, on_delete=models.CASCADE , null=True)
     def __str__(self):
         return str(self.id_usuario)
@@ -129,9 +131,17 @@ class Memorice(models.Model):
 
 class Galeria(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    imagenes = models.ImageField(upload_to='imagenes-user')
+    imagenes = models.ImageField(upload_to='imagenes-user',null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.usuario)
 
+
+
+class gallery(models.Model):
+    image = models.ImageField(upload_to='user-', null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user)

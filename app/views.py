@@ -13,9 +13,25 @@ from django.shortcuts import redirect
 from django.db import connection
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from rest_framework.decorators import api_view
 import json
+from django.contrib.auth import get_user
+from django.contrib.auth.models import User
 
 # CREACION DE VISTAS
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def api(request):
+    if request.method == 'GET':
+        names = []
+        for path in os.listdir('imagenes-user/user-'):
+            names.append(path)
+        pass
+    elif request.method == 'POST':
+        # Código para manejar la solicitud POST
+        pass
+    return JsonResponse({'names': names})
 
 def grilla6x6(request):
     data = {
@@ -54,22 +70,6 @@ def grilla8x8(request):
             formulario = MemoriceForm()
     return render(request, 'app/grilla8x8.html')
 
-
-def subir_imagenes(request):
-    data2 = {
-        'form': GaleriaForm,
-    }
-    if request.method == 'POST':
-        print("ESTOY ADENTRO DEL IFFF")
-        formulario = GaleriaForm(data=request.POST)
-        if formulario.is_valid():
-            post = formulario.save(commit=False)
-            post.imagenes = request.POST[""]
-            post.usuario_id = request.user.id
-            formulario.save()
-        else:
-            formulario = MemoriceForm()
-    return render(request, 'app/subir_imagenes.html', data2)
     # return render(request, 'app/subir_imagenes.html')
 
 
@@ -124,6 +124,20 @@ def memorama(request):
         else:
             formulario = Resultado_Form()
     return render(request, 'app/memorama.html', data)
+
+
+def subir_imagenes(request):
+    if request.method == "POST":
+        images = request.FILES.getlist('images')
+
+        user = User.objects.get(username=request.user.username)
+
+        for image in images:
+            gallery.objects.create(image = image, user = user)
+
+        uploaded_images = gallery.objects.all()
+        return JsonResponse({"images": [{"url": image.image.url} for image in uploaded_images]})
+    return render(request, "app/subir_imagenes.html")
 
 class JuegosView(View):
     @method_decorator(csrf_exempt)

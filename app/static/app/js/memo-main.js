@@ -39,6 +39,10 @@ function contarTiempo() {
     }, 1000);
 }
 
+function conseguirNombreArchivos() {
+
+}
+
 function bloquearTarjetas() {
     for (let i = 0; i <= 15; i++) {
         let tarjetaBloada = document.getElementById(i);

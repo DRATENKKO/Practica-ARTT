@@ -71,7 +71,8 @@ function processFile(file) {
             document.querySelector("#preview").innerHTML = image + html;
         });
         fileReader.readAsDataURL(file);
-        //uploadFile(file, id);
+        // uploadFile(file, id);
+        document.getElementById('imagen').value = file.name;
 
     } else {
         //archivo no valido
@@ -79,23 +80,23 @@ function processFile(file) {
     }
 }
 
-// async function uploadFile(file) {
-//     const formData = new FormData();
-//     formData.append("file", file);
+async function uploadFile(file) {
+    const formData = new FormData();
+    formData.append("file", file);
 
-//     try {
-//         const response = await fetch('http://localhost:3000/upload', {
-//             method: "POST",
-//             body: formData,
-//         });
-//         const responseText = await response.text();
-//         console.log(responseText);
-//         document.querySelector(
-//             `#${id} .status-text`
-//         ).innerHTML = `<span class="success">Archivo subido correctamente</span>`
-//     } catch (error) {
-//         document.querySelector(
-//             `#${id} .status-text`
-//         ).innerHTML = `<span class="failure">Error al subir el archivo</span>`
-//     }
-// }
+    try {
+        const response = await fetch('http://localhost:3000/upload', {
+            method: "POST",
+            body: formData,
+        });
+        const responseText = await response.text();
+        console.log(responseText);
+        document.querySelector(
+            `#${id} .status-text`
+        ).innerHTML = `<span class="success">Archivo subido correctamente</span>`
+    } catch (error) {
+        document.querySelector(
+            `#${id} .status-text`
+        ).innerHTML = `<span class="failure">Error al subir el archivo</span>`
+    }
+}
