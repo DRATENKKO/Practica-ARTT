@@ -28,12 +28,12 @@
                             <ul>
                                 <li><a href="{% url 'memorama' %}">Memorice</a></li>
                             </ul>
-                        <li><a href="{% url 'subir_imagenes' %}">Subir Imagenes</a></li>
-                        </li>
                         {% if user.is_authenticated %}
                         <li class="current">
                             <a href="{% url 'logout' %}">Cerrar Sesion</a>
                         </li>
+                        <li><a href="{% url 'subir_imagenes' %}">Subir Imagenes</a></li>
+                    </li>
                         <li>
                             <a href=""> Hola {{user.username}}</a>
                         </li>
@@ -41,9 +41,9 @@
                         <li class="current">
                             <a href="{% url 'login' %}">Iniciar sesion</a>
                         </li>
-                        <li class="currentt">
+                        {% comment %} <li class="currentt">
                             <a href="{% url 'registro' %}">Registrate</a>
-                        </li>
+                        </li> {% endcomment %}
                         {% endif %}
 
                         <!-- <li><a href=" ">Perfil</a>
