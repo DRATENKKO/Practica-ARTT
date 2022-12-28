@@ -11,11 +11,22 @@
     <title>Document</title>
 </head>
 <body>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-  <input type="file" name="images" multiple>
-  <button type="submit" href="{% url 'index' %}">Send</button>
-</form>    
+
+  <div class="container">
+      {% if n == 8 %}
+      <h1>YA has registrado tus 8 imagenes!!!!</h1>
+    
+      {% else %}
+      <h1>Has seleccionado {{n}} de 8 imagenes</h1>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="images" multiple>
+        <button type="submit" href="{% url 'index' %}">Send</button>
+      </form>    
+      {% endif %}
+  </div>
+  
+  
 </body>
 {% comment %} href="{% url 'index' %}" {% endcomment %}
                     {{ mensaje }}

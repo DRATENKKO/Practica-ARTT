@@ -102,12 +102,13 @@ def registro(request):
 ###################### MEMORICE #######################
 ################ NO TOCAR DE MOMENTO ##################
 
-
 def memorama(request):
     get_juegos = Juego.objects.get(descripcion="Juego de memoria")
+    get_img = gallery.objects.filter(user_id = request.user.id)
     print(get_juegos.descripcion)
     data = {
         'form':Resultado_Form,
+        'get_img':get_img,
     }
     print(request.user.id)
     if request.method == 'POST':
@@ -127,17 +128,52 @@ def memorama(request):
 
 
 def subir_imagenes(request):
+    #Genero una variable donde obtengo todas las imagenes del usuario logiado
+    gallery_user = gallery.objects.filter(user_id = request.user.id)
+    #arreglo vacio donde se guardaran todos los count_img del usuario para asignarla a cada imagen un numero del 1 al 8
+    imgs_counts = []
+    valor_mayor = 0
+
+    #Recorro tos los registro dentro de galleria
+    for i in gallery_user:
+        #Agrego al arreglo el conteo de las imagenes
+        imgs_counts.append(i.count_img)
+    print(imgs_counts)
+    #guardo el numero mayor 
+    if imgs_counts:
+        valor_mayor = max(imgs_counts)
+
+    # obtener la longitud de la array
+    n = len(imgs_counts)
+ 
+    # El tamaño real de # es `n+1` ya que falta un número en la lista
+    m = n + 1
+    # obtiene una suma de enteros entre 1 y `n+1`
+    total = m * (m + 1) // 2
+    # el número que falta es la diferencia entre la suma esperada y
+    # la suma real de enteros en la lista
+    numero_faltante = total - sum(imgs_counts)
+   
+
+    data = {
+        'valor_mayor':valor_mayor,
+        'n':n
+    }
+
     if request.method == "POST":
         images = request.FILES.getlist('images')
-
         user = User.objects.get(username=request.user.username)
-
+        #se define que en la variable se sume 1 al numero mayor del arreglo
+        count_img = valor_mayor + 1
+        if numero_faltante < 8:
+            count_img = numero_faltante
         for image in images:
-            gallery.objects.create(image = image, user = user)
+            gallery.objects.create(image = image, user = user, count_img = count_img)
 
         uploaded_images = gallery.objects.all()
-        return JsonResponse({"images": [{"url": image.image.url} for image in uploaded_images]})
-    return render(request, "app/subir_imagenes.html")
+        return redirect(to = 'subir_imagenes')
+        #return JsonResponse({"images": [{"url": image.image.url} for image in uploaded_images]})
+    return render(request, "app/subir_imagenes.html",data)
 
 class JuegosView(View):
     @method_decorator(csrf_exempt)

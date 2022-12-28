@@ -124,6 +124,8 @@ class gallery(models.Model):
     id = models.AutoField(primary_key=True)
     image = models.ImageField(upload_to='user-', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    #cambiar nombre a etiqueta
+    count_img = models.IntegerField(null=True, default=1)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

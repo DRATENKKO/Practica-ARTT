@@ -16,15 +16,35 @@ let clickAudio = new Audio('/static/app/recursos/sonidos-memorice/click.wav')
 let rightAudio = new Audio('/static/app/recursos/sonidos-memorice/right.wav')
 let wrongAudio = new Audio('/static/app/recursos/sonidos-memorice/wrong.wav')
 
+
 //apuntandor html
 let mostrarMovimientos = document.getElementById('movimientos')
 let mostrarAciertos = document.getElementById('Aciertos');
 let mostrarTiempo = document.getElementById('t-restante');
 
+// traer ruta de imagenes
+let img_1 = document.getElementById('img_1');
+let img_2 = document.getElementById('img_2');
+let img_3 = document.getElementById('img_3');
+let img_4 = document.getElementById('img_4');
+let img_5 = document.getElementById('img_5');
+let img_6 = document.getElementById('img_6');
+let img_7 = document.getElementById('img_7');
+let img_8 = document.getElementById('img_8');
+
+
+//Arreglo con todas las imagenes del usuario
+let imagenes_user = [img_1.innerHTML, img_2.innerHTML, img_3.innerHTML, img_4.innerHTML,img_5.innerHTML, img_6.innerHTML, img_7.innerHTML,img_8.innerHTML]
+
+
+console.log(imagenes_user[0]);
+    
+
+
 //generaricion de numeros aleatoreos
 let numeros = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
 numeros = numeros.sort(() => { return Math.random() - 0.5 });
-console.log(numeros);
+
 
 //funciones
 function contarTiempo() {
@@ -46,7 +66,8 @@ function conseguirNombreArchivos() {
 function bloquearTarjetas() {
     for (let i = 0; i <= 15; i++) {
         let tarjetaBloada = document.getElementById(i);
-        tarjetaBloada.innerHTML = `<img src="/static/app/recursos/images/${numeros[i]}.png" alt="">`;;
+        //tarjetaBloada.innerHTML = `<img src="/static/app/recursos/images/${numeros[i]}.png" alt="">`;
+        tarjetaBloada.innerHTML = `<img src= "${imagenes_user[i]}">`;
         tarjetaBloada.disabled = true;
     }
 }
@@ -65,7 +86,16 @@ function destapar(id) {
         //mostrar primer elemento
         tarjeta1 = document.getElementById(id);
         primerResultado = numeros[id];
-        tarjeta1.innerHTML = `<img src="/static/app/recursos/images/${primerResultado}.png" alt="">`;
+        console.log("el primer resultado es: "+ primerResultado);
+        //tarjeta1.innerHTML = `<img src="/static/app/recursos/images/${primerResultado}.png" alt="">`;
+        if(primerResultado == "8"){
+            console.log("estoy en el if");
+            tarjeta1.innerHTML = `<img src= "${imagenes_user[0]}">`;
+            console.log("la url de la imagen es: " + imagenes_user[0]);
+        } else
+            tarjeta1.innerHTML = `<img src= "${imagenes_user[primerResultado]}">`;
+            console.log("la utl d ela imagen es : "+ tarjeta1.innerHTML);
+            console.log( tarjeta1.innerHTML);
         clickAudio.play();
         //deshabilitar primer boton
         tarjeta1.disabled = true;
@@ -73,8 +103,12 @@ function destapar(id) {
         //mostrar segundo elemento
         tarjeta2 = document.getElementById(id);
         segundoResultado = numeros[id];
-        tarjeta2.innerHTML = `<img src="/static/app/recursos/images/${segundoResultado}.png" alt="">`;;
-
+        if(segundoResultado == "8"){
+            console.log("estoy en el if");
+            tarjeta2.innerHTML = `<img src= "${imagenes_user[0]}">`;
+        } else
+            //tarjeta2.innerHTML = `<img src="/static/app/recursos/images/${segundoResultado}.png" alt="">`;;
+            tarjeta2.innerHTML = `<img src= "${imagenes_user[segundoResultado]}">`;
         ////deshabilitar segundo boton
         tarjeta2.disabled = true;
 
