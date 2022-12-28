@@ -75,7 +75,14 @@
     </section>
 
 </div>
-
+<div style="display: none;">
+    
+    {% for i in get_img  %}
+        <h1 id="img_{{i.count_img}}">{{i.image.url}}</h1>
+        <img src="{{ i.image.url }}" class="card-img-top" alt="..." style="width: 300px;" ></a>
+    {% endfor %}
+        
+</div>
 
 <!-- MEMORICE -->
 <script src="{% static 'app/js/memo-main.js' %}"></script>
