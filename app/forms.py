@@ -76,16 +76,3 @@ class CustomUserCreationForm(UserCreationForm):
 #     class Meta:
 #         model = Memorice
 #         fields = 'acierto', 'tiempo', 'movimientos'
-
-
-class GaleriaForm(forms.ModelForm):
-    imagenes = forms.ImageField(label='Imagenes', widget=forms.FileInput(
-        attrs={
-            'placeholder': 'Ingresa imagenes',
-            'id': 'imagen'
-        }))
-    class Meta:
-        model = Galeria
-        fields = ('imagenes',)
-
-

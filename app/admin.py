@@ -2,14 +2,6 @@ from django.contrib import admin
 from .models import *
 # Register your models here.
 
-
-# MEMORICE
-
-
-class MemoriceAdmin(admin.ModelAdmin):
-    list_display = ["usuario", "acierto", "tiempo",
-                    "movimientos", "timestamp"]
-
 class Resultado_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_resultado", "id_usuario", "id_juego",
                     "resultado_1", "resultado_2", "resultado_3",
@@ -18,15 +10,23 @@ class Resultado_juegoAdmin(admin.ModelAdmin):
 class galleryAdmin(admin.ModelAdmin):
     list_display = ["id", "image", "user","timestamp"]
 
+class Tipo_usuarioAdmin(admin.ModelAdmin):
+    list_display = ["id_tipo_usuario", "nombre_tipo_usuario", "descripcion"]
 
+class JuegoAdmin(admin.ModelAdmin):
+    list_display = ["id", "descripcion", "id_tipo_juego"]
 
-admin.site.register(Memorice, MemoriceAdmin)
-admin.site.register(Galeria)
-admin.site.register(Tipo_juego)
-admin.site.register(Juego)
+class UsuarioAdmin(admin.ModelAdmin):
+    list_display = ["id_usuario", "username", "password", "first_name","last_name","email","id_telegram","id_tipo_usuario"]
+
+class Tipo_juegoAdmin(admin.ModelAdmin):
+    list_display = ["id_tipo_juego", "nombre_juego"]
+
+admin.site.register(Tipo_juego,Tipo_juegoAdmin)
+admin.site.register(Juego,JuegoAdmin)
 admin.site.register(Resultado_juego,Resultado_juegoAdmin)
-admin.site.register(Usuario)
-admin.site.register(Tipo_usuario)
+admin.site.register(Usuario,UsuarioAdmin)
+admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 admin.site.register(Terapista)
 admin.site.register(gallery,galleryAdmin)
 
