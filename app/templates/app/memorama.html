@@ -10,7 +10,7 @@
 
 <link rel="stylesheet" href="{% static 'app/css/style-memorice.css' %}">
 <link rel="stylesheet" href="{% static 'app/css/fontawesome-all.min.css' %}">
-
+{% if user.is_authenticated %}
 <div class="page-wrapper">
     <div style="width: 100%; display: flex;">
         <ul style=" list-style:none; width: 100%; display:flex;justify-content:center; font-size:24px;"">
@@ -21,7 +21,7 @@
     </div>
 
     <main>
-
+        
         <section class="section1">
             <h1 class="titulo"> 🎴​ JUEGO DE MEMORIA 🎴​</h1>
             <table>
@@ -73,8 +73,10 @@
             </form>
         </section>
     </section>
-
 </div>
+{% else %}
+<h1 style="text-align:center;">Debes iniciar sesión para jugar</h1>
+{% endif %}
 
 
 <!-- MEMORICE -->

@@ -59,6 +59,7 @@ function destapar(id) {
     }
 
 
+
     tarjetasDestapadas++;
 
     if (tarjetasDestapadas == 1) {
