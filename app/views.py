@@ -64,7 +64,7 @@ def grilla8x8(request):
             post.acierto = request.POST["acierto"]
             post.tiempo = request.POST["tiempo"]
             post.movimientos = request.POST["movimientos"]
-            post.usuario_id = request.user.id
+            post.usuario_id = request.user.id_usuario
             formulario.save()
         else:
             formulario = MemoriceForm()
@@ -145,7 +145,7 @@ def subir_imagenes(request):
 
     # obtener la longitud de la array
     n = len(imgs_counts)
- 
+
     # El tamaño real de # es `n+1` ya que falta un número en la lista
     m = n + 1
     # obtiene una suma de enteros entre 1 y `n+1`
@@ -154,7 +154,7 @@ def subir_imagenes(request):
     # el número que falta es la diferencia entre la suma esperada y
     # la suma real de enteros en la lista
     numero_faltante = total - sum(imgs_counts)
-   
+
 
     data = {
         'valor_mayor':valor_mayor,
@@ -176,70 +176,70 @@ def subir_imagenes(request):
         #return JsonResponse({"images": [{"url": image.image.url} for image in uploaded_images]})
     return render(request, "app/subir_imagenes.html",data)
 
-class JuegosView(View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args,**kwargs):
-        return super().dispatch(request, *args, **kwargs)
+# class JuegosView(View):
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, request, *args,**kwargs):
+#         return super().dispatch(request, *args, **kwargs)
     
-    def get(self, request, id=0):
+#     def get(self, request, id=0):
 
-#si la id es mayor a 0, se busca el juego con esa id
+# #si la id es mayor a 0, se busca el juego con esa id
 
-        if (id > 0):
-            Juegos = list(Resultado_juego.objects.filter(id_resultado=id).values())
-            if len(Juegos) > 0:
-                Juego=Juegos[0]
-                datos = {'message': 'Juegos encontrados', 'Juegos': Juegos[0]}
-            else:
-                datos = {'message': 'No se encontraron Juegos'}
-            return JsonResponse(datos)
+#         if (id > 0):
+#             Juegos = list(Resultado_juego.objects.filter(id_resultado=id).values())
+#             if len(Juegos) > 0:
+#                 Juego=Juegos[0]
+#                 datos = {'message': 'Juegos encontrados', 'Juegos': Juegos[0]}
+#             else:
+#                 datos = {'message': 'No se encontraron Juegos'}
+#             return JsonResponse(datos)
 
-#se buscan todos los juegos
+# #se buscan todos los juegos
 
-        Juegos = list(Resultado_juego.objects.values())
-        if len(Juegos) > 0:
-            datos = {'message': 'Juegos encontrados', 'Juegos': Juegos}
-        else:
-            datos = {'message': 'No se encontraron Juegos'}
+#         Juegos = list(Resultado_juego.objects.values())
+#         if len(Juegos) > 0:
+#             datos = {'message': 'Juegos encontrados', 'Juegos': Juegos}
+#         else:
+#             datos = {'message': 'No se encontraron Juegos'}
         
-        return JsonResponse(datos)
+#         return JsonResponse(datos)
 
-    def post(self, request):
-        # print(request.body)
-        jd = json.loads(request.body)
-        # print(jd)
+#     def post(self, request):
+#         # print(request.body)
+#         jd = json.loads(request.body)
+#         # print(jd)
         
-# se hace la insercion de los datos
-        data = {
-        'form': Resultado_juegoForm(),
-        }
-        Resultado_juego.objects.create(resultado_1=jd['resultado_1'], resultado_2=jd['resultado_2'], resultado_3=jd['resultado_3'])
-        datos = {'message': 'Juegos encontrados'}
-        return JsonResponse(datos)
+# # se hace la insercion de los datos
+#         data = {
+#         'form': Resultado_juegoForm(),
+#         }
+#         Resultado_juego.objects.create(resultado_1=jd['resultado_1'], resultado_2=jd['resultado_2'], resultado_3=jd['resultado_3'])
+#         datos = {'message': 'Juegos encontrados'}
+#         return JsonResponse(datos)
     
-    def put(self, request, id):
-        jd = json.loads(request.body)
-        Juegos = list(Resultado_juego.objects.filter(id_resultado=id).values())
-        if len(Juegos) > 0:
-            Juego = Resultado_juego.objects.get(id_resultado=id)
-            Juego.resultado_1 = jd['resultado_1']
-            Juego.resultado_2 = jd['resultado_2']
-            Juego.resultado_3 = jd['resultado_3']
-            Juego.save()
-            datos = {'message': 'Juegos actualizados'}
-        else:
-            datos = {'message': 'No se encontraron Juegos'}
-        return JsonResponse(datos)
+#     def put(self, request, id):
+#         jd = json.loads(request.body)
+#         Juegos = list(Resultado_juego.objects.filter(id_resultado=id).values())
+#         if len(Juegos) > 0:
+#             Juego = Resultado_juego.objects.get(id_resultado=id)
+#             Juego.resultado_1 = jd['resultado_1']
+#             Juego.resultado_2 = jd['resultado_2']
+#             Juego.resultado_3 = jd['resultado_3']
+#             Juego.save()
+#             datos = {'message': 'Juegos actualizados'}
+#         else:
+#             datos = {'message': 'No se encontraron Juegos'}
+#         return JsonResponse(datos)
     
-    def delete(self, request, id):
-        Juegos = list(Resultado_juego.objects.filter(id_resultado=id).values())
-        if len(Juegos) > 0:
-            Juego = Resultado_juego.objects.get(id_resultado=id)
-            Juego.delete()
-            datos = {'message': 'Juegos eliminados'}
-        else:
-            datos = {'message': 'No se encontraron Juegos'}
-        return JsonResponse(datos)
+#     def delete(self, request, id):
+#         Juegos = list(Resultado_juego.objects.filter(id_resultado=id).values())
+#         if len(Juegos) > 0:
+#             Juego = Resultado_juego.objects.get(id_resultado=id)
+#             Juego.delete()
+#             datos = {'message': 'Juegos eliminados'}
+#         else:
+#             datos = {'message': 'No se encontraron Juegos'}
+#         return JsonResponse(datos)
 
     # return render(request, 'app/memorama.html')
 
