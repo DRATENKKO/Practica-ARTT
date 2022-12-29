@@ -85,7 +85,7 @@ class Usuario(AbstractBaseUser):
     apellidos = models.CharField('Apellidos',max_length=100)
     email = models.CharField('Correo electronico',max_length=100)
     id_telegram = models.CharField('Usuario Telegram',max_length=100)
-    id_tipo_usuario = models.ForeignKey(Tipo_usuario,default=1 , on_delete=models.CASCADE)
+    id_tipo_usuario = models.ForeignKey(Tipo_usuario,default=1,blank=True, null=True , on_delete=models.CASCADE)
     usuario_activo = models.BooleanField(default=True)
     usuario_administrador = models.BooleanField(default=False)
     
