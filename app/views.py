@@ -104,13 +104,13 @@ def registro(request):
 
 def memorama(request):
     get_juegos = Juego.objects.get(descripcion="Juego de memoria")
-    get_img = gallery.objects.filter(user_id = request.user.id)
+    get_img = gallery.objects.filter(user_id = request.user.id_usuario)
     print(get_juegos.descripcion)
     data = {
         'form':Resultado_Form,
         'get_img':get_img,
     }
-    print(request.user.id)
+    print(request.user.id_usuario)
     if request.method == 'POST':
         formulario = Resultado_Form(data=request.POST)
         if formulario.is_valid():
@@ -118,7 +118,7 @@ def memorama(request):
             post.resultado_1 = request.POST["Resultado_1"]
             post.resultado_2 = request.POST["Resultado_2"]
             post.resultado_3 = request.POST["Resultado_3"]
-            post.id_usuario_id = request.user.id
+            post.id_usuario_id = request.user.id_usuario
             post.id_juego_id = get_juegos.id
             post.save()
             formulario.save()
@@ -129,7 +129,7 @@ def memorama(request):
 
 def subir_imagenes(request):
     #Genero una variable donde obtengo todas las imagenes del usuario logiado
-    gallery_user = gallery.objects.filter(user_id = request.user.id)
+    gallery_user = gallery.objects.filter(user_id = request.user.id_usuario)
     #arreglo vacio donde se guardaran todos los count_img del usuario para asignarla a cada imagen un numero del 1 al 8
     imgs_counts = []
     valor_mayor = 0
@@ -163,7 +163,7 @@ def subir_imagenes(request):
 
     if request.method == "POST":
         images = request.FILES.getlist('images')
-        user = User.objects.get(username=request.user.username)
+        user = Usuario.objects.get(username=request.user.username)
         #se define que en la variable se sume 1 al numero mayor del arreglo
         count_img = valor_mayor + 1
         if numero_faltante < 8:
