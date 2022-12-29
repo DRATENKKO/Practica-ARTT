@@ -34,9 +34,32 @@ class Resultado_Form(forms.ModelForm):
         fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
         
 class CustomUserCreationForm(UserCreationForm):
+    password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Ingresa tu contraseña',
+            'id': 'password1',
+            'required': 'required'
+        }))
+    password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder': 'Confirma tu contraseña',
+            'id': 'password2',
+            'required': 'required'
+        }))
+    
+    
     class Meta:
-        model = User
-        fields = ['username',"first_name","last_name","email","password1","password2"]
+        model = Usuario
+        #all fields
+        fields = 'username','email','nombres','apellidos', 'id_telegram'
+
+    username = models.CharField('Nombre de usuario',unique=True,max_length=100)
+    nombres = models.CharField('Nombres',max_length=100)
+    apellidos = models.CharField('Apellidos',max_length=100)
+    email = models.CharField('Correo electronico',max_length=100)
+    id_telegram = models.CharField('Usuario Telegram',max_length=100)
 
 
 # ['username', 'password1','first_name', 'last_name','email','id_telegram',]

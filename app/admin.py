@@ -17,7 +17,8 @@ class JuegoAdmin(admin.ModelAdmin):
     list_display = ["id", "descripcion", "id_tipo_juego"]
 
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ["id_usuario", "username", "password", "first_name","last_name","email","id_telegram","id_tipo_usuario"]
+    list_display = ['id_usuario', 'username', 'nombres', 'apellidos', 'email', 'id_telegram', 'id_tipo_usuario', 'usuario_activo', 'usuario_administrador']
+
 
 class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]

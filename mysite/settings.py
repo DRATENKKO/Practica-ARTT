@@ -83,6 +83,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
+AUTH_USER_MODEL = 'app.Usuario'
 
 # Database: 'default'
 # ENGINE: 'django.db.backends.sqlite3'

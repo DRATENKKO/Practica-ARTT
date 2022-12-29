@@ -150,6 +150,7 @@ def subir_imagenes(request):
     m = n + 1
     # obtiene una suma de enteros entre 1 y `n+1`
     total = m * (m + 1) // 2
+    print(total)
     # el número que falta es la diferencia entre la suma esperada y
     # la suma real de enteros en la lista
     numero_faltante = total - sum(imgs_counts)
