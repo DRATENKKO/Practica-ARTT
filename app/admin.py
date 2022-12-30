@@ -3,7 +3,7 @@ from .models import *
 # Register your models here.
 
 class Resultado_juegoAdmin(admin.ModelAdmin):
-    list_display = ["id_resultado", "id_usuario", "id_juego",
+    list_display = ["id_resultado", "id_juego",
                     "resultado_1", "resultado_2", "resultado_3",
                     "resultado_4", "resultado_5","timestampp"]
 
@@ -17,7 +17,7 @@ class JuegoAdmin(admin.ModelAdmin):
     list_display = ["id", "descripcion", "id_tipo_juego"]
 
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ['id_usuario', 'username', 'nombres', 'apellidos', 'email', 'id_telegram', 'id_tipo_usuario', 'usuario_activo', 'usuario_administrador']
+    list_display = ['username',  'email', 'id_telegram']
 
 
 class Tipo_juegoAdmin(admin.ModelAdmin):
