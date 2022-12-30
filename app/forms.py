@@ -32,34 +32,98 @@ class Resultado_Form(forms.ModelForm):
     class Meta:
         model = Resultado_juego
         fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
-        
-class CustomUserCreationForm(UserCreationForm):
-    password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput(
+
+
+
+class CustomUserCreationForm(forms.ModelForm):
+
+    username = forms.CharField(label='Nombre de usuario', widget=forms.TextInput(
         attrs={
-            'class': 'form-control',
-            'placeholder': 'Ingresa tu contraseña',
-            'id': 'password1',
-            'required': 'required'
+            'class': 'form-control mb-2',
+            'placeholder': 'Ingrese su nombre de usuario',
+            'id': 'username'
         }))
-    password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput(
+
+    first_name = forms.CharField(label=' ingrese su nombre', widget=forms.TextInput(
         attrs={
-            'class': 'form-control',
-            'placeholder': 'Confirma tu contraseña',
-            'id': 'password2',
-            'required': 'required'
+            'class': 'form-control mb-2',
+            'placeholder': 'Ingrese su nombre de usuario',
+            'id': 'first_name'
         }))
-    
-    
+
+    last_name = forms.CharField(label=' ingrese su apellido', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control mb-2',
+            'placeholder': 'Ingrese su nombre de usuario',
+            'id': 'last_name'
+        }))
+
+    email = forms.EmailField(label='correo electronico', widget=forms.EmailInput(attrs={
+        'class': 'form-control mb-2',
+        'placeholder': 'Ingrese su correo electronico',
+        'id': 'email'
+    }))
+
+    id_telegram = forms.CharField(label='telegram', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control mb-2',
+            'placeholder': 'Ingrese su telegram',
+            'id': 'password'
+        }))
+
+    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(
+        attrs={
+            'class': 'form-control mb-2',
+            'placeholder': 'Ingrese Contraseña',
+            'id': 'password'
+        }))
+
     class Meta:
         model = Usuario
-        #all fields
-        fields = 'username','email','nombres','apellidos', 'id_telegram'
+        fields = 'username', 'first_name', 'last_name', 'email', 'id_telegram', 'password'
 
-    username = models.CharField('Nombre de usuario',unique=True,max_length=100)
-    nombres = models.CharField('Nombres',max_length=100)
-    apellidos = models.CharField('Apellidos',max_length=100)
-    email = models.CharField('Correo electronico',max_length=100)
-    id_telegram = models.CharField('Usuario Telegram',max_length=100)
+    def clean_password(self):
+        """ validacion de contraseña
+        metodo que valida la contraseña 
+        """
+        password = self.cleaned_data.get('password')
+        return password
+
+    def save(self, commit=True):
+        # guardar la informacion del registro en la variable user
+        user = super().save(commit=False)
+        # encriptar contraseña
+        user.set_password(self.cleaned_data['password'])
+        if commit:
+            user.save()
+        return user
+        
+
+# Form usuario por consola
+
+class FormaRegistro(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(
+        label='Confirm password', widget=forms.PasswordInput)
+
+    class Meta:
+        model = Usuario
+        fields = ('username', )
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        qs = Usuario.objects.filter(username=username)
+        if qs.exists():
+            raise forms.ValidationError("Username ya registrado")
+        return username
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError("Las contraseñas no coinciden")
+
+        return password2
 
 
 # ['username', 'password1','first_name', 'last_name','email','id_telegram',]

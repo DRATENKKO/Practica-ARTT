@@ -84,14 +84,14 @@ def index(request):
 
 def registro(request):
     data = {
-        'form': CustomUserCreationForm,
+        'form': CustomUserCreationForm(),
     }
     
     if request.method == 'POST':
         formulario = CustomUserCreationForm(data=request.POST)
         if formulario.is_valid():
             formulario.save()
-            User = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password1"])
+            User = authenticate(username=formulario.cleaned_data["username"], password=formulario.cleaned_data["password"])
             login(request, User)
             messages.success(request, "Te has registrado correctamente")
             return redirect(to="index")
@@ -104,13 +104,13 @@ def registro(request):
 
 def memorama(request):
     get_juegos = Juego.objects.get(descripcion="Juego de memoria")
-    get_img = gallery.objects.filter(user_id = request.user.id_usuario)
+    get_img = gallery.objects.filter(user_id = request.user.id)
     print(get_juegos.descripcion)
     data = {
         'form':Resultado_Form,
         'get_img':get_img,
     }
-    print(request.user.id_usuario)
+    
     if request.method == 'POST':
         formulario = Resultado_Form(data=request.POST)
         if formulario.is_valid():
@@ -118,7 +118,7 @@ def memorama(request):
             post.resultado_1 = request.POST["Resultado_1"]
             post.resultado_2 = request.POST["Resultado_2"]
             post.resultado_3 = request.POST["Resultado_3"]
-            post.id_usuario_id = request.user.id_usuario
+            post.id_usuario_id = request.user.id
             post.id_juego_id = get_juegos.id
             post.save()
             formulario.save()
@@ -129,7 +129,7 @@ def memorama(request):
 
 def subir_imagenes(request):
     #Genero una variable donde obtengo todas las imagenes del usuario logiado
-    gallery_user = gallery.objects.filter(user_id = request.user.id_usuario)
+    gallery_user = gallery.objects.filter(user_id = request.user.id)
     #arreglo vacio donde se guardaran todos los count_img del usuario para asignarla a cada imagen un numero del 1 al 8
     imgs_counts = []
     valor_mayor = 0

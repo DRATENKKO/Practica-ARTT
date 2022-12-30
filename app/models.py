@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser, UserManager
 from django.db import models
 # get current u
 
@@ -49,62 +49,46 @@ class Tipo_usuario(models.Model):
     def __str__(self):
         return str(self.nombre_tipo_usuario)
 
-class UsuarioManager(BaseUserManager):
-    def create_user(self, username, email, nombres, apellidos, id_telegram, id_tipo_usuario, password=None):
-        if not email:
-            raise ValueError('Los usuarios deben tener un correo electrónico')
+
+class UsuarioManager(UserManager):
+    def create_user(self, username, nombre, apellido, correo, password = None):
         usuario = self.model(
-            username = username,
-            email = self.normalize_email(email),
-            nombres = nombres,
-            apellidos = apellidos,
-            id_telegram = id_telegram,
-            id_tipo_usuario = id_tipo_usuario,
+            username    = username,
+            first_name  = nombre,
+            last_name   = apellido,
+            email       = correo
         )
         usuario.set_password(password)
-        usuario.save(using=self._db)
+        usuario.save()
         return usuario
-    def create_superuser(self, username, email, nombres, apellidos, id_telegram, id_tipo_usuario, password):
+
+    def create_superuser(self, username, nombre, apellido, correo, password):
         usuario = self.create_user(
-            email,
             username = username,
-            nombres = nombres,
-            apellidos = apellidos,
-            id_telegram = id_telegram,
-            id_tipo_usuario = id_tipo_usuario,
-            password = password,
-        )
-        usuario.usuario_administrador = True
-        usuario.save(using=self._db)
-        return usuario
-#USUARIO
-class Usuario(AbstractBaseUser):
-    id_usuario = models.AutoField(primary_key=True)
-    username = models.CharField('Nombre de usuario',unique=True,max_length=100)
-    nombres = models.CharField('Nombres',max_length=100)
-    apellidos = models.CharField('Apellidos',max_length=100)
-    email = models.CharField('Correo electronico',max_length=100)
-    id_telegram = models.CharField('Usuario Telegram',max_length=100)
-    id_tipo_usuario = models.ForeignKey(Tipo_usuario,blank=True, null=True , on_delete=models.CASCADE)
-    usuario_activo = models.BooleanField(default=True)
-    usuario_administrador = models.BooleanField(default=False)
-    
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['nombres','apellidos','email','id_telegram']
-    
-    objects = UsuarioManager()
+            first_name = nombre,
+            last_name = apellido,
+            email = correo
+        ) 
+        usuario.usuario_administrador = True      
+        usuario.save()
+        return usuario 
+
+
+class Usuario(AbstractUser):
+    Tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete= models.CASCADE, null=True)
+    id_telegram = models.CharField(max_length=100, null=True, default=0)
+
     def __str__(self):
-        return f'{self.username},{self.apellidos}'
-    
-    def has_perm(self, perm, obj=None):
+        return self.username
+
+    def has_perm(self,perm,obj = None):
         return True
-    
+
     def has_module_perms(self, app_label):
-        return True
-    
-    @property
-    def is_staff(self):
-        return self.usuario_administrador
+        return True   
+
+
+
 
 #PACIENTE
 class Paciente(models.Model):
