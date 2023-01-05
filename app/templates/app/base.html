@@ -27,7 +27,9 @@
                         <li><a href="">Juegos</a>
                             <ul>
                                 <li><a href="{% url 'memorama' %}">Memorice</a></li>
+                                <li><a href="{% url 'crucigrama' %}">Crucigrama</a></li>
                             </ul>
+                        </li>
                         {% if user.is_authenticated %}
                         <li class="current">
                             <a href="{% url 'logout' %}">Cerrar Sesion</a>

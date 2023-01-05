@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-STATICFILES_DIRS = ['app\static']
+STATICFILES_DIRS = ['app\static','node_modules']
 # Application definition
 
 INSTALLED_APPS = [

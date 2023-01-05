@@ -30,4 +30,6 @@ admin.site.register(Usuario,UsuarioAdmin)
 admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 admin.site.register(Terapista)
 admin.site.register(gallery,galleryAdmin)
+admin.site.register(Trivia)
+admin.site.register(Respuesta_Trivia)
 
