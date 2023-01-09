@@ -1,26 +1,26 @@
+{% extends 'app/base2.html' %}
 {% load static%}
 
 {% block css%}
 
 {% endblock %}
+
 {% block contenido %}
+<link rel="stylesheet" href="{% static 'app/css/fontawesome-all.min.css' %}">
 <link rel="stylesheet" href="{% static 'app/css/crucigrama.css' %}">
 
 <div class="container crosswordDisplay">
   
   <div class="row">
-  <!-- Create & Play buttons required for user generated crossword - disabled for Proscribed questions -->
+    <div class="alinear">
       <div class="btn btn-default" id="btnCreate">Ver respuestas</div>
       <div class="btn btn-default" id="btnPlay">Jugar</div>
-    
+      <div class="btn" id="btnGen" style="display: none;">Generar</div>
       <div class="btn btn-default" id="btnReset">Reiniciar</div>
         <div class="btn btn-default" id="btnCheck">Verificar respuestas</div>
     </div>
   
     <div class="center crossword" id="crossword"></div>
-    
-  <div class="btn" id="btnGen">Generar</div>
-    
     
     <div class="col-lg-6 ">
     <div class="clueBlock" id="cluesAcross">
