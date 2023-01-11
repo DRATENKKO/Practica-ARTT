@@ -19,9 +19,14 @@ class JuegoAdmin(admin.ModelAdmin):
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ['username',  'email', 'id_telegram']
 
-
 class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]
+
+class TriviaAdmin(admin.ModelAdmin):
+    list_display = ["id_trivia", "ordinal","pregunta_trivia"]
+
+class Respuesta_TriviaAdmin(admin.ModelAdmin):
+    list_display = ["id_respuesta_trivia", "timestamp", "id_pregunta", "user", "respuesta_trivia"]
 
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
 admin.site.register(Juego,JuegoAdmin)
@@ -30,6 +35,6 @@ admin.site.register(Usuario,UsuarioAdmin)
 admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 admin.site.register(Terapista)
 admin.site.register(gallery,galleryAdmin)
-admin.site.register(Trivia)
-admin.site.register(Respuesta_Trivia)
+admin.site.register(Trivia,TriviaAdmin)
+admin.site.register(Respuesta_Trivia,Respuesta_TriviaAdmin)
 

@@ -21,6 +21,7 @@ var Bounds = {
     bottom: 0,
     left: 0,
 
+
     Update: function (x, y) {
         this.top = Math.min(y, this.top);
         this.right = Math.max(x, this.right);

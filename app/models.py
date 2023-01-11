@@ -138,11 +138,12 @@ class gallery(models.Model):
 
     def __str__(self):
         return str(self.user)
+
 #TRIVIA
 class Trivia(models.Model):
     id_trivia = models.AutoField(primary_key=True)
+    ordinal = models.CharField(max_length=100)
     pregunta_trivia = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
 
     def __str__(self):
         return str(self.id_trivia)
@@ -150,9 +151,10 @@ class Trivia(models.Model):
 class Respuesta_Trivia(models.Model):
     id_respuesta_trivia = models.AutoField(primary_key=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    respuesta_trivia = models.CharField(max_length=100)
+    id_pregunta = models.ForeignKey(Trivia, on_delete=models.CASCADE)
     user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_trivia = models.ForeignKey(Trivia, on_delete=models.CASCADE)
+    respuesta_trivia = models.CharField(max_length=100)
 
     def __str__(self):
         return str(self.id_respuesta_trivia)
+
