@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser, UserManager
+from django.contrib.auth.models import  AbstractUser, UserManager
 from django.db import models
 #REGION
 class Region(models.Model):
@@ -138,23 +138,15 @@ class gallery(models.Model):
 
     def __str__(self):
         return str(self.user)
-
+# user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+# timestamp = models.DateTimeField(auto_now_add=True)
 #TRIVIA
 class Trivia(models.Model):
     id_trivia = models.AutoField(primary_key=True)
     ordinal = models.CharField(max_length=100)
     pregunta_trivia = models.CharField(max_length=100)
-
+    respuesta_trivia = models.CharField(max_length=100,null=True)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
     def __str__(self):
         return str(self.id_trivia)
-#RESPUESTA TRIVIA
-class Respuesta_Trivia(models.Model):
-    id_respuesta_trivia = models.AutoField(primary_key=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    id_pregunta = models.ForeignKey(Trivia, on_delete=models.CASCADE)
-    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    respuesta_trivia = models.CharField(max_length=100)
-
-    def __str__(self):
-        return str(self.id_respuesta_trivia)
-

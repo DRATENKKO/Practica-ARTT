@@ -23,10 +23,8 @@ class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]
 
 class TriviaAdmin(admin.ModelAdmin):
-    list_display = ["id_trivia", "ordinal","pregunta_trivia"]
+    list_display = ["id_trivia", "ordinal","pregunta_trivia", "respuesta_trivia","user"]
 
-class Respuesta_TriviaAdmin(admin.ModelAdmin):
-    list_display = ["id_respuesta_trivia", "timestamp", "id_pregunta", "user", "respuesta_trivia"]
 
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
 admin.site.register(Juego,JuegoAdmin)
@@ -36,5 +34,4 @@ admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 admin.site.register(Terapista)
 admin.site.register(gallery,galleryAdmin)
 admin.site.register(Trivia,TriviaAdmin)
-admin.site.register(Respuesta_Trivia,Respuesta_TriviaAdmin)
 

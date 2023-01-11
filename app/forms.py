@@ -3,14 +3,6 @@ from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-#CRUCIGRAMA
-class TriviaForm(forms.ModelForm):
-    # specify the name of model to use
-    class Meta:
-        model = Trivia
-        fields = "__all__"
-
-
 # MEMORICE
 class Resultado_Form(forms.ModelForm):
     

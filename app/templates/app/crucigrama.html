@@ -30,15 +30,13 @@
       <div>
       {% if request.user.is_authenticated %}
         {% for t in Trivia %}
-          {% for rt in Respuesta_Trivia%}
             <div class="col-lg-6 ">
             <div class="line">
-              <input class="word" type="text" value="{{rt.respuesta_trivia}}"/>   
+              <input class="word" type="text" value="{{t.respuesta_trivia}}"/>   
               <span class="lineNum"></span>   
               <input class="clue" value="{{ t.pregunta_trivia }}" />
             <div/>
             </div>
-          {% endfor %}
         {% endfor %}
       {% endif %}
             </div>

@@ -90,12 +90,11 @@ def grilla8x8(request):
 
 
 def crucigrama(request):
-    Trivias = Trivia.objects.all()
-    Respuesta_Trivias = Respuesta_Trivia.objects.all()
-    data = {
-        'Trivia': Trivia.objects.all(),
-        'Respuesta_Trivia' : Respuesta_Trivia.objects.all(),
-    }
+    if request.user.is_authenticated:
+        Trivias = Trivia.objects.all()
+        data = {
+            'Trivia': Trivia.objects.all(),
+        }
     return render(request, 'app/crucigrama.html', data)
 
 
