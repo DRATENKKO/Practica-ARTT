@@ -28,6 +28,7 @@
       
       </div>
       <div>
+      
       {% if request.user.is_authenticated %}
         {% for t in Trivia %}
             <div class="col-lg-6 ">
@@ -38,6 +39,23 @@
             <div/>
             </div>
         {% endfor %}
+        {% else %}
+        <div class="line">
+          <input class="word" type="text" value="Gabriel" />
+          <span class="lineNum"></span>
+          <input class="clue" value="¿Primer nombre de actual presidente chileno?"/>
+        </div>
+        <div class="line">
+          <input class="word" type="text" value="Cristobal"/>
+          <span class="lineNum"></span>
+          <input class="clue" value="¿Primer nombre de la persona que descubrió america?" />
+        </div>
+    
+        <div class="line">
+          <input class="word" type="text" value="Santiago"/>
+          <span class="lineNum"></span>
+          <input class="clue" value="Capital de chile" />
+        </div>
       {% endif %}
             </div>
 
