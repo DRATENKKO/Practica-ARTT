@@ -33,21 +33,6 @@ def api(request):
         pass
     return JsonResponse({'names': names})
 
-#MOVIE
-def crucigrama(request):
-	if request.method == "POST":
-		movie_form = MovieForm(request.POST, request.FILES)
-		if movie_form.is_valid():
-			movie_form.save()
-			messages.success(request, ('Your movie was successfully added!'))
-		else:
-			messages.error(request, 'Error saving form')
-		
-		
-		return redirect("main:homepage")
-	movie_form = MovieForm()
-	movies = Movie.objects.all()
-	return render(request=request, template_name="app/crucigrama.html", context={'movie_form':movie_form, 'movies':movies})
 
 def grilla6x6(request):
     data = {
@@ -90,12 +75,11 @@ def grilla8x8(request):
 
 
 def crucigrama(request):
-    if request.user.is_authenticated:
-        Trivias = Trivia.objects.all()
-        data = {
-            'Trivia': Trivia.objects.all(),
+    data = {
+        'Trivia': Trivia.objects.all(),
+        'Trivia': Trivia.objects.filter(user=request.user)
         }
-    return render(request, 'app/crucigrama.html', data)
+    return render(request,'app/crucigrama.html', data)
 
 
 def index(request):
