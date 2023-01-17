@@ -83,7 +83,7 @@
 
 (function ($, undefined) {
 
-    $.widget("ryanf.wordsearchwidget", $.ui.mouse, {
+    $.widget("ryanf.wordsearchwidget", $.ui.mouse, ({
 
         options: {
             wordlist: null,
@@ -203,7 +203,7 @@
             this.arms.returnToNormal();
         }
 
-    }
+    })
     ); //widget
 
 
