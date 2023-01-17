@@ -1,0 +1,14 @@
+{% extends 'app/base.html' %}
+{% load static%}
+
+{% block css%}
+
+{% endblock %}
+
+{% block contenido %}
+<link rel="stylesheet" href="{% static 'app\static\app\css\sopaletras.css' %}">
+    <div class="container"> 
+        <div id="theGrid"></div>
+    <div/>
+    <script src="{% static 'app\static\app\js\sopaletras.js' %}"></script>
+{% endblock %}

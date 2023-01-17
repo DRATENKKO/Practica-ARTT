@@ -90,7 +90,8 @@ def crucigrama(request):
 def index(request):
     return render(request, 'app/index.html')
 
-
+def sopaletras(request):
+    return render(request, 'app/sopaletras.html')
 
 def registro(request):
     data = {

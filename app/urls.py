@@ -13,4 +13,5 @@ urlpatterns = [
     # path('Juegos/<int:id>',JuegosView.as_view(), name="JuegosView_process"),
     path('registro/', registro, name="registro"),
     path('api/', api, name="api"),
+    path('sopaletras/', sopaletras, name="sopaletras"),
 ]
