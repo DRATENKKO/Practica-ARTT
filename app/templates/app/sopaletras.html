@@ -29,9 +29,9 @@
 <div>
     {% if request.user.is_authenticated %}
     {% for s in Sopa %}
-        <input id="ff{{word}}" class="word" type="text" value="{{s.word}}"/>   
-        <input class="direction" value="{{ s.direction }}" />
-        <input class="start" value="{{ s.start }}" />
+        <input  class="word" type="text"         value="{{ s.word }}"/>   
+        <input  class="direction" type="text"    value="{{ s.direction }}" />
+        <input  class="start" type="number"        value="{{ s.start }}" />
         <div/>
         </div>
     {% endfor %}

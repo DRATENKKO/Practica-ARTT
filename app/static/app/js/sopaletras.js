@@ -5,21 +5,29 @@ var click = {
 var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
     "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
-    let word = document.getElementById('ffword')
+// Create an empty array to store the words
+var words = [];
 
-var words = [
-{ "word": "MOTH", "direction": "E", "start": 37 },
-{ "word": "DOUBLE", "direction": "S", "start": 100 },
-{ "word": "CREATURE", "direction": "S", "start": 72 },
-{ "word": "GIPSY", "direction": "NW", "start": 217 },
-{ "word": "MOBILE", "direction": "W", "start": 98 },
-{ "word": "COMPUTER", "direction": "N", "start": 201 },
-{ "word": "THEWEB", "direction": "N", "start": 165 },
-{ "word": "HORSES", "direction": "E", "start": 6 },
-{ "word": "HICKORYJUMP", "direction": "NE", "start": 204 },
-{ "word": "CHROME", "direction": "NW", "start": 220 },
-{ "word": "MULDER", "direction": "E", "start": 41 },
-];
+// Get all the input elements with the class "word"
+var wordElements = document.getElementsByClassName("word");
+
+
+// Iterate over the input elements
+for (var i = 0; i < wordElements.length; i++) {
+    // Get the current input element
+    var inputElement = wordElements[i];
+    
+    // Get the word, direction, and start position from the input element's value
+    var word = inputElement.value;
+    var direction = inputElement.nextElementSibling.value;
+    var start = inputElement.nextElementSibling.nextElementSibling.value;
+    //
+    if (typeof start === "string") {
+        start = parseInt(start);
+    }
+    // Add the word, direction, and start position to the words array
+    words.push({ "word": word, "direction": direction, "start": start });
+}
 
 $("#view-words").on("click", function() {
     $(".words").toggle();
