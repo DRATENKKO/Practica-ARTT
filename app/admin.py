@@ -25,6 +25,9 @@ class Tipo_juegoAdmin(admin.ModelAdmin):
 class TriviaAdmin(admin.ModelAdmin):
     list_display = ["id_trivia", "ordinal","pregunta_trivia", "respuesta_trivia","user"]
 
+class Sopa_letrasAdmin(admin.ModelAdmin):
+    list_display = ["id_sopa","pregunta_sopa", "word","direction", "start","user"]
+
 
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
 admin.site.register(Juego,JuegoAdmin)
@@ -34,4 +37,5 @@ admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 admin.site.register(Terapista)
 admin.site.register(gallery,galleryAdmin)
 admin.site.register(Trivia,TriviaAdmin)
+admin.site.register(Sopa_letras,Sopa_letrasAdmin)
 

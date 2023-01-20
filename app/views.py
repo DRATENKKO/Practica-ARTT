@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from .forms import *
 from .models import *
-# importar api
 from rest_framework import viewsets
 import os
 from django.utils.decorators import method_decorator
@@ -90,7 +89,17 @@ def crucigrama(request):
 def index(request):
     return render(request, 'app/index.html')
 
-
+def sopaletras(request):
+    if request.user.is_authenticated:
+        data = {
+            'Sopa': Sopa_letras.objects.all(),
+            'Sopa': Sopa_letras.objects.filter(user=request.user)
+            }
+    else:
+        data = {
+            'Sopa': Sopa_letras.objects.all()
+        }
+    return render(request, 'app/sopaletras.html', data)
 
 def registro(request):
     data = {
