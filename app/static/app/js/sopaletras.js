@@ -1,1338 +1,405 @@
-/*!
- * The Word Search Game Widget
- *
- * Copyright 2011, Ryan Fernandes (https://code.google.com/u/@VBFTRFJWDxFDXgJ4/)
- * Licensed under The MIT License.
- * see license.txt
- *
- */
+var pos = [];
+var click = {
+    "startPos": "", "endPos": ""
+};
+var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
-//==============================================================================
-//------------------------------------------------------------------------------  
-//The Word Search Game Widget
-//------------------------------------------------------------------------------  
-//  
-//  ------
-//  Usage:
-//  ------
-//      $(document).ready( function () {
-//      var words = "earth,mars,mercury,neptune,pluto,saturn,jupiter,one,two,
-//              three,four,five,six,seven,eight,mozart,bach,meyer,rose,mahler";
-//      $("#theGrid").wordsearchwidget({"wordlist" : words,"gridsize" : 12});
-//  });
-//  
-//  -------
-//  Inputs: 
-//  -------
-//  gridsize - Size of grid to generate (this will be a square)
-//  wordlist - Comma separated list of words to place on the grid
-//  
-//  -------------
-//  What it does:               
-//  -------------
-//  Creates a grid of letters with words from the wordlist
-//  These words are randomly placed in the following directions
-//  1. Horizontal
-//  2. Vertical
-//  3. Left-Diagonal
-//  4. Right-Diagonal
-//  In addition, the letters are placed in forward or reverse order, randomly
-//  Provision is made to overlap words
-//  
-//  The User is expected to click on a letter and drag to the last letter of the 
-//  word. If the selected letters form a word that is in the word list the UI
-//  will indicate that by crossing it out from the wordlist
-//  
-//  If the user cannot find a word, she has to click on that word in the 
-//  wordlist and the UI will hightlight the word in the grid and cross it out
-//  
-//  ------------------
-//  Technical Details:
-//  ------------------ 
-//  
-//      Contains 3 areas: 
-//          a) main game grid (#rf-searchgamecontainer)
-//          b) list of words to be found (#rf-wordcontainer)
-//          c) list of words that have been found (#rf-foundwordcontainer)
-//      
-//      Data Structures used:
-//      ---------------------
-//          Objects related to the Data Model
-//          0) Model
-//              a) Grid
-//                  1) Cell
-//                  2) HorizontalPopulator
-//                  3) VerticalPopulator
-//                  4) LeftDiagonalPopulator
-//                  5) RightDiagonalPopulator
-//                  
-//              b) WordList
-//                  1) Word
-//          
-//          Objects related to View
-//          1) Root
-//          2) Hotzone
-//          3) Arms
-//          4) Visualizer
-//          
-//          Objects related to the controller
-//          1) GameWidgetHelper         
-//          
-//          
-//==============================================================================
+    let word = document.getElementById('ffword')
 
-(function ($, undefined) {
+var words = [
+{ "word": "MOTH", "direction": "E", "start": 37 },
+{ "word": "DOUBLE", "direction": "S", "start": 100 },
+{ "word": "CREATURE", "direction": "S", "start": 72 },
+{ "word": "GIPSY", "direction": "NW", "start": 217 },
+{ "word": "MOBILE", "direction": "W", "start": 98 },
+{ "word": "COMPUTER", "direction": "N", "start": 201 },
+{ "word": "THEWEB", "direction": "N", "start": 165 },
+{ "word": "HORSES", "direction": "E", "start": 6 },
+{ "word": "HICKORYJUMP", "direction": "NE", "start": 204 },
+{ "word": "CHROME", "direction": "NW", "start": 220 },
+{ "word": "MULDER", "direction": "E", "start": 41 },
+];
 
-    $.widget("ryanf.wordsearchwidget", $.ui.mouse, ({
+$("#view-words").on("click", function() {
+    $(".words").toggle();
+});
 
-        options: {
-            wordlist: null,
-            gridsize: 10
-        },
-        _mapEventToCell: function (event) {
-            var currentColumn = Math.ceil((event.pageX - this._cellX) / this._cellWidth);
-            var currentRow = Math.ceil((event.pageY - this._cellY) / this._cellHeight);
-            var el = $('#rf-tablegrid tr:nth-child(' + currentRow + ') td:nth-child(' + currentColumn + ')');
-            return el;
-        },
+var revealed = [];
 
-        _create: function () {
-            //member variables
-            this.model = GameWidgetHelper.prepGrid(this.options.gridsize, this.options.wordlist)
-            this.startedAt = new Root();
-            this.hotzone = new Hotzone();
-            this.arms = new Arms();
-
-
-            GameWidgetHelper.renderGame(this.element[0], this.model);
-
-            this.options.distance = 0; // set mouse option property
-            this._mouseInit();
-
-            var cell = $('#rf-tablegrid tr:first td:first');
-            this._cellWidth = cell.outerWidth();
-            this._cellHeight = cell.outerHeight();
-            this._cellX = cell.offset().left;
-            this._cellY = cell.offset().top;
-        },//_create
-
-        destroy: function () {
-
-            this.hotzone.clean();
-            this.arms.clean();
-            this.startedAt.clean();
-
-            this._mouseDestroy();
-            return this;
-
-        },
-
-        //mouse callbacks
-        _mouseStart: function (event) {
-
-            var panel = $(event.target).parents("div").attr("id");
-            if (panel == 'rf-searchgamecontainer') {
-                this.startedAt.setRoot(event.target);
-                this.hotzone.createZone(event.target)
-            }
-            else if (panel == 'rf-wordcontainer') {
-                //User has requested help. Identify the word on the grid
-                //We have a reference to the td in the cells that make up this word
-                var idx = $(event.target).parent().children().index(event.target);
-
-                var selectedWord = this.model.wordList.get(idx);
-                $(selectedWord.cellsUsed).each(function () {
-                    Visualizer.highlight($(this.td));
-                });
-
-            }
-
-        },
-
-        _mouseDrag: function (event) {
-            event.target = this._mapEventToCell(event);
-            //if this.root - clear out everything and return to orignal clicked state
-            if (this.startedAt.isSameCell(event.target)) {
-                this.arms.returnToNormal();
-                this.hotzone.setChosen(-1);
-                return;
-            }
-
-            //if event is on an armed cell
-            if ($(event.target).hasClass("rf-armed") || $(event.target).hasClass("rf-glowing")) { //CHANGE! 
-
-                //if in hotzone
-                var chosenOne = this.hotzone.index(event.target);
-                if (chosenOne != -1) {
-                    //set target to glowing; set rest of hotzone to armed
-                    this.hotzone.setChosen(chosenOne);
-
-                    //calculate arms and set to armed
-                    this.arms.deduceArm(this.startedAt.root, chosenOne);
-
-
-                } else { //in arms
-                    //set glowing from target to root
-                    this.arms.glowTo(event.target)
-                }
-            }
-
-        },
-
-        _mouseStop: function (event) {
-
-            //get word
-            var selectedword = '';
-            $('.rf-glowing, .rf-highlight', this.element[0]).each(function () {
-                var u = $.data(this, "cell");
-                selectedword += u.value;
-            });
-
-            var wordIndex = this.model.wordList.isWordPresent(selectedword)
-            if (wordIndex != -1) {
-                $('.rf-glowing, .rf-highlight', this.element[0]).each(function () {
-                    Visualizer.select(this);
-                    $.data(this, "selected", "true");
-
-                });
-                GameWidgetHelper.signalWordFound(wordIndex);
-            }
-
-            this.hotzone.returnToNormal();
-            this.startedAt.returnToNormal();
-            this.arms.returnToNormal();
+for (var i = 0; i < words.length; i++) {
+    var start = words[i].start;
+    var end = words[i].end;
+    var direction = words[i].direction;
+    for (var j = 0; j < words[i].word.length; j++) {
+        revealed.push(start);
+        if (direction == "N") {
+            if (j + 1 != words[i].word.length) start -= 20;
         }
+        if (direction == "NE") {
+            if (j + 1 != words[i].word.length) start -= 19;
+        }
+        if (direction == "E") {
+            if (j + 1 != words[i].word.length) start += 1;
+        }
+        if (direction == "SE") {
+            if (j + 1 != words[i].word.length) start += 21;
+        }
+        if (direction == "S") {
+            if (j + 1 != words[i].word.length) start += 20;
+        }
+        if (direction == "SW") {
+            if (j + 1 != words[i].word.length) start += 19;
+        }
+        if (direction == "W") {
+            if (j + 1 != words[i].word.length) start -= 1;
+        }
+        if (direction == "NW") {
+            if (j + 1 != words[i].word.length) start -= 21;
+        }
+        //add all the other direction cases
+    }
+}
 
-    })
-    ); //widget
+$("#reveal-words").on("click", function() {
+    for (var i = 0; i < revealed.length; i++) {
+        $(".letters").find("." + revealed[i]).css("color", "#ff4486");
+    }
+});
 
+// Prepare the wordsearch with random letters and word layout
+$(document).ready(function () {
+    // grab the size of the grid.  I used this method in case I need to 
+    // scale this word search in the future
+    var size = 220; //($(".left").css("width").slice(0, 3) - 20) / 2 ;
 
-    $.extend($.ryanf.wordsearchwidget, {
-        version: "0.0.1"
+    // put random letters on the board
+    for (var i = 0; i < size; i++) {
+        $(".letters").append("<span class='" + (i + 1) + "'>" +
+            getRandomLetter() + "</span>");
+    }
+
+    // insert the words onto the board
+    for (var i = 0; i < words.length; i++) {
+        words[i].end = words[i].start;
+        displayWord(words[i]);
+        // save the start and end of each word for word checking later
+        pos[i] = { "start": words[i].start, "end": words[i].end };
+        $(".words").append("<span class='" + (i) + "'>" +
+            words[i].word + "</span>");
+    }
+
+    $("#menu").on("mouseup", function () {
+        $(this).css({ "display": "none" })
+        $("#main").slideDown("slow", function () {
+        })
     });
+})
 
-    //------------------------------------------------------------------------------
-    // VIEW OBJECTS 
-    //------------------------------------------------------------------------------
-    /*
-     * The Arms represent the cells that are selectable once the hotzone has been 
-     * exited/passed
-     */
-    function Arms() {
-        this.arms = null;
+function getRandomLetter() {
+    return letters[Math.floor(Math.random() * letters.length)];
+}
 
-        //deduces the arm based on the cell from which it exited the hotzone.
-        this.deduceArm = function (root, idx) {
-
-            this.returnToNormal(); //clear old arm
-            var ix = $(root).parent().children().index(root);
-
-            //create the new nominees
-            this.arms = new Array();
-
-            //create surrounding nominees
-            switch (idx) {
-                case 0: //horizontal left
-                    this.arms = $(root).prevAll();
-                    break;
-
-                case 1: //horizontal right
-                    this.arms = $(root).nextAll();
-                    break;
-
-                case 2: //vertical top
-                    var $n = this.arms;
-                    $(root).parent().prevAll().each(function () {
-                        $n.push($(this).children().get(ix));
-                    });
-
-                    break;
-
-                case 3: //vertical bottom
-                    var $o = this.arms;
-                    $(root).parent().nextAll().each(function () {
-                        $o.push($(this).children().get(ix));
-                    });
-                    break;
-
-                case 4: //right diagonal up
-
-                    var $p = this.arms;
-
-                    //for all prevAll rows
-                    var currix = ix;
-                    $(root).parent().prevAll().each(function () {
-                        $p.push($(this).children().get(++currix));
-                    });
-                    break;
-
-                case 5: //left diagonal up
-                    var $q = this.arms;
-
-                    //for all prevAll rows
-                    var currixq = ix;
-                    $(root).parent().prevAll().each(function () {
-                        $q.push($(this).children().get(--currixq));
-                    });
-                    break;
-
-                case 6: //left diagonal down
-                    var $r = this.arms;
-                    //for all nextAll rows
-                    var currixr = ix;
-                    $(root).parent().nextAll().each(function () {
-                        $r.push($(this).children().get(++currixr));
-                    });
-                    break;
-
-                case 7: //right diagonal down
-                    var $s = this.arms;
-                    //for all nextAll rows
-                    var currixs = ix;
-                    $(root).parent().nextAll().each(function () {
-                        $s.push($(this).children().get(--currixs));
-                    });
-                    break;
-
-
-            }
-            for (var x = 1; x < this.arms.length; x++) {
-                Visualizer.arm(this.arms[x]);
-            }
+function displayWord(w) {
+    for (var j = 0; j < w.word.length; j++) {
+        if (w.direction == "N") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end -= 20;
         }
-
-        //lights up the cells that from the root cell tothe current one
-        this.glowTo = function (upto) {
-            var to = $(this.arms).index(upto);
-
-            for (var x = 1; x < this.arms.length; x++) {
-
-                if (x <= to) {
-                    Visualizer.glow(this.arms[x]);
-                }
-                else {
-                    Visualizer.arm(this.arms[x]);
-
-                }
-            }
+        if (w.direction == "NE") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end -= 19;
         }
-
-        //clear out the arms 
-        this.returnToNormal = function () {
-            if (!this.arms) return;
-
-            for (var t = 1; t < this.arms.length; t++) { //don't clear the hotzone
-                Visualizer.restore(this.arms[t]);
-            }
+        if (w.direction == "E") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end += 1;
         }
-
-
-        this.clean = function () {
-            $(this.arms).each(function () {
-                Visualizer.clean(this);
-            });
+        if (w.direction == "SE") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end += 21;
         }
-
-    }
-
-    /*
-     * Object that represents the cells that are selectable around the root cell
-     */
-    function Hotzone() {
-
-        this.elems = null;
-
-        //define the hotzone
-        //select all neighboring cells as nominees
-        this.createZone = function (root) {
-            this.elems = new Array();
-
-            var $tgt = $(root);
-            var ix = $tgt.parent().children().index($tgt);
-
-            var above = $tgt.parent().prev().children().get(ix); // above
-            var below = $tgt.parent().next().children().get(ix); // below
-
-            //nominatedCells.push(event.target); // self
-            this.elems.push($tgt.prev()[0], $tgt.next()[0]); //horizontal
-            this.elems.push(above, below,
-                $(above).next()[0], $(above).prev()[0], //diagonal
-                $(below).next()[0], $(below).prev()[0] //diagonal
-            );
-
-
-            $(this.elems).each(function () {
-                if ($(this) != null) {
-                    Visualizer.arm(this);
-                }
-            });
-
+        if (w.direction == "S") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end += 20;
         }
-        //give the hotzone some intelligence
-        this.index = function (elm) {
-            return $(this.elems).index(elm);
+        if (w.direction == "SW") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end += 19;
         }
-
-        this.setChosen = function (chosenOne) {
-            for (var x = 0; x < this.elems.length; x++) {
-                Visualizer.arm(this.elems[x]);
-            }
-            if (chosenOne != -1) {
-                Visualizer.glow(this.elems[chosenOne]);
-            }
-
+        if (w.direction == "W") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end -= 1;
         }
-
-        this.returnToNormal = function () {
-
-            for (var t = 0; t < this.elems.length; t++) {
-                Visualizer.restore(this.elems[t]);
-            }
-        }
-
-        this.clean = function () {
-            $(this.elems).each(function () {
-                Visualizer.clean(this);
-            });
-        }
-
-    }
-
-    /*
-     * Object that represents the first cell clicked
-     */
-    function Root() {
-        this.root = null;
-
-        this.setRoot = function (root) {
-            this.root = root;
-            Visualizer.glow(this.root);
-        }
-
-        this.returnToNormal = function () {
-            Visualizer.restore(this.root);
-        }
-
-        this.isSameCell = function (t) {
-            return $(this.root).is($(t));
-        }
-
-        this.clean = function () {
-            Visualizer.clean(this.root);
-        }
-
-    }
-
-    /*
-     * A utility object that manipulates the cell display based on the methods called.
-     */
-    var Visualizer = {
-
-        glow: function (c) {
-            $(c).removeClass("rf-armed")
-                .removeClass("rf-selected")
-                .addClass("rf-glowing");
-        },
-
-        arm: function (c) {
-            $(c)//.removeClass("rf-selected")
-                .removeClass("rf-glowing")
-                .addClass("rf-armed");
-
-        },
-
-        restore: function (c) {
-            $(c).removeClass("rf-armed")
-                .removeClass("rf-glowing");
-
-            if (c != null && $.data(c, "selected") == "true") {
-                $(c).addClass("rf-selected");
-            }
-        },
-
-        select: function (c) {
-            $(c).removeClass("rf-armed")
-                .removeClass("rf-glowing")
-                .animate({ 'opacity': '20' }, 500, "linear", function () {
-                    $(c).removeClass("rf-highlight").addClass("rf-selected")
-                        .animate({ 'opacity': 'show' }, 500, "linear")
-                })
-
-
-        },
-
-        highlight: function (c) {
-            $(c).removeClass("rf-armed")
-                .removeClass("rf-selected")
-                .addClass("rf-highlight");
-        },
-
-        signalWordFound: function (w) {
-
-            $(w).css("background", 'yellow').animate({ "opacity": 'hide' }, 1000, "linear",
-                function () {
-                    $(w).css("background", 'white')
-                    $(w).addClass('rf-foundword').animate({ "opacity": 'show' }, 1000, "linear")
-                });
-        },
-
-
-
-
-        clean: function (c) {
-            $(c).removeClass("rf-armed")
-                .removeClass("rf-glowing")
-                .removeClass("rf-selected");
-
-            $.removeData($(c), "selected");
-
+        if (w.direction == "NW") {
+            $(".letters").find("." + w.end).text(w.word[j]);
+            if (j + 1 != w.word.length) w.end -= 21;
         }
     }
-
-    //--------------------------------------------------------
-    // OBJECTS RELATED TO THE MODEL
-    //------------------------------------------------------------------------------
-
-    /*
-     * Represents the individual cell on the grid
-     */
-    function Cell() {
-        this.DEFAULT = "-";
-        this.isHighlighted = false;
-        this.value = this.DEFAULT;
-        this.parentGrid = null;
-        this.isUnwritten = function () {
-            return (this.value == this.DEFAULT);
-        };
-        this.isSelected = false;
-        this.isSelecting = true;
-        this.td = null; // reference to UI component
-
-
-    }//Cell
-
-    /*
-     * Represents the Grid
-     */
-    function Grid() {
-        this.cells = null;
-
-        this.directions = [
-            "LeftDiagonal",
-            "Horizontal",
-            "RightDiagonal",
-            "Vertical"
-        ];
-
-        this.initializeGrid = function (size) {
-            this.cells = new Array(size);
-            for (var i = 0; i < size; i++) {
-                this.cells[i] = new Array(size);
-                for (var j = 0; j < size; j++) {
-                    var c = new Cell();
-                    c.parentgrid = this;
-                    this.cells[i][j] = c;
-                }
-            }
-        }
-
-
-        this.getCell = function (row, col) {
-            return this.cells[row][col];
-        }
-
-        this.createHotZone = function (uic) {
-            var $tgt = uic;
-
-            var hzCells = new Array();
-            var ix = $tgt.parent().children().index($tgt);
-
-        }
-
-        this.size = function () {
-            return this.cells.length;
-        }
-
-        //place word on grid at suggested location
-        this.put = function (row, col, word) {
-            //Pick the right Strategy to place the word on the grid
-            var populator = eval("new " + eval("this.directions[" + Math.floor(Math.random() * 4) + "]") + "Populator(row,col,word, this)");
-            var isPlaced = populator.populate();
-
-            //Didn't get placed.. brute force-fit (if possible)
-            if (!isPlaced) {
-                for (var x = 0; x < this.directions.length; x++) {
-                    var populator2 = eval("new " + eval("this.directions[" + x + "]") + "Populator(row,col,word, this)");
-                    var isPlaced2 = populator2.populate();
-                    if (isPlaced2) break;
-
-                }
-
-            }
-        }
-
-        this.fillGrid = function () {
-
-            for (var i = 0; i < this.size(); i++) {
-                for (var j = 0; j < this.size(); j++) {
-                    if (this.cells[i][j].isUnwritten()) {
-                        this.cells[i][j].value = String.fromCharCode(Math.floor(65 + Math.random() * 26));
-                    }
-                }
-            }
-
-        }
-
-    }//Grid
-
-    /*
-     * Set of strategies to populate the grid.
-     */
-    //Create a Horizontal Populator Strategy 
-    function HorizontalPopulator(row, col, word, grid) {
-
-        this.grid = grid;
-        this.row = row;
-        this.col = col;
-        this.word = word;
-        this.size = this.grid.size();
-        this.cells = this.grid.cells;
-
-        //populate the word
-        this.populate = function () {
-
-
-            // try and place word in this row
-
-            // check if this row has a contigous block free
-            // 1. starting at col (honour the input)
-            if (this.willWordFit()) {
-                this.writeWord();
-            }
-            else {
-
-                // for every row - try to fit this
-                for (var i = 0; i < this.size; i++) {
-
-                    var xRow = (this.row + i) % this.size; // loop through all rows starting at current;
-
-                    // 2. try starting anywhere on line
-                    var startingPoint = this.findContigousSpace(xRow, word);
-
-                    if (startingPoint == -1) {
-                        // if not, then try to see if we can overlap this word only any existing alphabets
-                        var overlapPoint = this.isWordOverlapPossible(xRow, word);
-                        if (overlapPoint == -1) {
-                            // if not, then try another row and repeat process,
-                            continue;
-                        }
-                        else {
-                            this.row = xRow;
-                            this.col = overlapPoint;
-                            this.writeWord();
-                            break;
-                        }
-                    }
-                    else {
-                        this.row = xRow;
-                        this.col = startingPoint;
-                        this.writeWord();
-                        break;
-                    }
-                }//for each row
-            }
-            // if still not, then return false (i.e. not placed. we need to try another direction
-            return (word.isPlaced);
-
-
-        }//populate
-
-
-        //write word on grid at given location
-        //also remember which cells were used for displaying the word
-        this.writeWord = function () {
-
-            var chars = word.chars;
-            for (var i = 0; i < word.size; i++) {
-                var c = new Cell();
-                c.value = chars[i];
-                this.cells[this.row][this.col + i] = c;
-                word.containedIn(c);
-                word.isPlaced = true;
-            }
-
-        }
-
-        //try even harder, check if this word can be placed by overlapping cells with same content
-        this.isWordOverlapPossible = function (row, word) {
-            return -1; //TODO: implement
-        }
-
-        //check if word will fit at the chosen location
-        this.willWordFit = function () {
-            var isFree = false;
-            var freeCounter = 0;
-            var chars = this.word.chars;
-            for (var i = col; i < this.size; i++) {
-                if (this.cells[row][i].isUnwritten() || this.cells[row][i] == chars[i]) {
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        isFree = true;
-                        break;
-                    }
-                }
-                else {
-                    break;
-                }
-            }
-            return isFree;
-        }
-
-        //try harder, check if there is contigous space anywhere on this line.
-        this.findContigousSpace = function (row, word) {
-            var freeLocation = -1;
-            var freeCounter = 0;
-            var chars = word.chars;
-            for (var i = 0; i < this.size; i++) {
-                if (this.cells[row][i].isUnwritten() || this.cells[row][i] == chars[i]) {
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        freeLocation = (i - (word.size - 1));
-                        break;
-                    }
-                }
-                else {
-                    freeCounter = 0;
-                }
-            }
-            return freeLocation;
-
-        }
-    }//HorizontalPopulator
-
-
-    //Create a Vertical Populator Strategy 
-    function VerticalPopulator(row, col, word, grid) {
-
-        this.grid = grid;
-        this.row = row;
-        this.col = col;
-        this.word = word;
-        this.size = this.grid.size();
-        this.cells = this.grid.cells;
-
-        //populate the word
-        this.populate = function () {
-
-
-            // try and place word in this row
-
-            // check if this row has a contigous block free
-            // 1. starting at col (honour the input)
-            if (this.willWordFit()) {
-                this.writeWord();
-            }
-            else {
-
-                // for every row - try to fit this
-                for (var i = 0; i < this.size; i++) {
-
-                    var xCol = (this.col + i) % this.size; // loop through all rows starting at current;
-
-                    // 2. try starting anywhere on line
-                    var startingPoint = this.findContigousSpace(xCol, word);
-
-                    if (startingPoint == -1) {
-                        // if not, then try to see if we can overlap this word only any existing alphabets
-                        var overlapPoint = this.isWordOverlapPossible(xCol, word);
-                        if (overlapPoint == -1) {
-                            // if not, then try another row and repeat process,
-                            continue;
-                        }
-                        else {
-                            this.row = overlapPoint;
-                            this.col = xCol;
-                            this.writeWord();
-                            break;
-                        }
-                    }
-                    else {
-                        this.row = startingPoint;
-                        this.col = xCol;
-                        this.writeWord();
-                        break;
-                    }
-                }//for each row
-            }
-            // if still not, then return false (i.e. not placed. we need to try another direction
-            return (word.isPlaced);
-
-
-        }//populate
-
-
-        //write word on grid at given location
-        this.writeWord = function () {
-
-            var chars = word.chars;
-            for (var i = 0; i < word.size; i++) {
-                var c = new Cell();
-                c.value = chars[i];
-                this.cells[this.row + i][this.col] = c; //CHANGED
-                word.containedIn(c);
-                word.isPlaced = true;
-            }
-
-        }
-
-        //try even harder, check if this word can be placed by overlapping cells with same content
-        this.isWordOverlapPossible = function (col, word) {
-            return -1; //TODO: implement
-        }
-
-        //check if word will fit at the chosen location
-        this.willWordFit = function () {
-            var isFree = false;
-            var freeCounter = 0;
-            var chars = this.word.chars;
-            for (var i = row; i < this.size; i++) { // CHANGED
-                if (this.cells[i][col].isUnwritten() || chars[i] == this.cells[i][col].value) { //CHANGED
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        isFree = true;
-                        break;
-                    }
-                }
-                else {
-                    break;
-                }
-            }
-            return isFree;
-        }
-
-        //try harder, check if there is contigous space anywhere on this line.
-        this.findContigousSpace = function (col, word) {
-            var freeLocation = -1;
-            var freeCounter = 0;
-            var chars = word.chars;
-            for (var i = 0; i < this.size; i++) {
-                if (this.cells[i][col].isUnwritten() || chars[i] == this.cells[i][col].value) { //CHANGED
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        freeLocation = (i - (word.size - 1));
-                        break;
-                    }
-                }
-                else {
-                    freeCounter = 0;
-                }
-            }
-            return freeLocation;
-
-        }
-    }//VerticalPopulator
-
-
-    //Create a LeftDiagonal Populator Strategy 
-    function LeftDiagonalPopulator(row, col, word, grid) {
-
-        this.grid = grid;
-        this.row = row;
-        this.col = col;
-        this.word = word;
-        this.size = this.grid.size();
-        this.cells = this.grid.cells;
-
-        //populate the word
-        this.populate = function () {
-
-
-            // try and place word in this row
-
-            // check if this row has a contigous block free
-            // 1. starting at col (honour the input)
-            if (this.willWordFit()) {
-                this.writeWord();
-            }
-            else {
-
-                var output = this.findContigousSpace(this.row, this.col, word);
-
-                if (output[0] != true) {
-
-                    // for every row - try to fit this
-                    OUTER: for (var col = 0, row = (this.size - word.size); row >= 0; row--) {
-                        for (var j = 0; j < 2; j++) {
-
-                            var op = this.findContigousSpace((j == 0) ? row : col, (j == 0) ? col : row, word);
-
-                            if (op[0] == true) {
-                                this.row = op[1];
-                                this.col = op[2];
-                                this.writeWord();
-                                break OUTER;
-                            }
-                        }
-
-                    }
-                }
-                else {
-                    this.row = output[1];
-                    this.col = output[2];
-                    this.writeWord();
-                }
-
-
-            }
-            // if still not, then return false (i.e. not placed. we need to try another direction
-            return (word.isPlaced);
-
-
-        }//populate
-
-
-        //write word on grid at given location
-        //also remember which cells were used for displaying the word
-        this.writeWord = function () {
-
-            var chars = word.chars;
-            var lrow = this.row;
-            var lcol = this.col;
-            for (var i = 0; i < word.size; i++) {
-                var c = new Cell();
-                c.value = chars[i];
-                this.cells[lrow++][lcol++] = c;
-                word.containedIn(c);
-                word.isPlaced = true;
-            }
-
-        }
-
-        //try even harder, check if this word can be placed by overlapping cells with same content
-        this.isWordOverlapPossible = function (row, word) {
-            return -1; //TODO: implement
-        }
-
-        //check if word will fit at the chosen location
-        this.willWordFit = function () {
-            var isFree = false;
-            var freeCounter = 0;
-            var chars = this.word.chars;
-            var lrow = this.row;
-            var lcol = this.col;
-            var i = 0;
-            while (lcol < this.grid.size() && lrow < this.grid.size()) {
-                if (this.cells[lrow][lcol].isUnwritten() || this.cells[lrow][lcol] == chars[i++]) {
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        isFree = true;
-                        break;
-                    }
-                }
-                else {
-                    break;
-                }
-                lrow++;
-                lcol++;
-
-            }
-            return isFree;
-        }
-
-        //try harder, check if there is contigous space anywhere on this line.
-        this.findContigousSpace = function (xrow, xcol, word) {
-            var freeLocation = false;
-            var freeCounter = 0;
-            var chars = word.chars;
-            var lrow = xrow;
-            var lcol = xcol;
-
-            while (lrow > 0 && lcol > 0) {
-                lrow--;
-                lcol--;
-            }
-            var i = 0;
-            while (true) {
-                if (this.cells[lrow][lcol].isUnwritten() || this.cells[lrow][lcol] == chars[i++]) {
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        freeLocation = true;
-                        break;
-                    }
-                }
-                else {
-                    freeCounter = 0;
-                }
-                lcol++;
-                lrow++;
-
-                if (lcol >= this.size || lrow >= this.size) {
-                    break;
-                }
-            }
-            if (freeLocation) {
-                lrow = lrow - word.size + 1;
-                lcol = lcol - word.size + 1;
-            }
-            return [freeLocation, lrow, lcol];
-
-        }
-    }//LeftDiagonalPopulator
-
-
-    //Create a RightDiagonal Populator Strategy 
-    function RightDiagonalPopulator(row, col, word, grid) {
-
-        this.grid = grid;
-        this.row = row;
-        this.col = col;
-        this.word = word;
-        this.size = this.grid.size();
-        this.cells = this.grid.cells;
-
-        //populate the word
-        this.populate = function () {
-
-
-            // try and place word in this row
-
-            // check if this row has a contigous block free
-            // 1. starting at col (honour the input)
-            var rr = 0;
-            if (this.willWordFit()) {
-                this.writeWord();
-            }
-            else {
-
-                var output = this.findContigousSpace(this.row, this.col, word);
-
-                if (output[0] != true) {
-
-                    // for every row - try to fit this
-                    OUTER: for (var col = this.size - 1, row = (this.size - word.size); row >= 0; row--) {
-                        for (var j = 0; j < 2; j++) {
-
-                            var op = this.findContigousSpace((j == 0) ? row : (this.size - 1 - col), (j == 0) ? col : (this.size - 1 - row), word);
-
-                            if (op[0] == true) {
-                                this.row = op[1];
-                                this.col = op[2];
-                                this.writeWord();
-                                break OUTER;
-                            }
-                        }
-
-                    }
-                }
-                else {
-                    this.row = output[1];
-                    this.col = output[2];
-                    this.writeWord();
-                }
-
-
-            }
-            // if still not, then return false (i.e. not placed. we need to try another direction
-            return (word.isPlaced);
-
-
-        }//populate
-
-
-        //write word on grid at given location
-        //also remember which cells were used for displaying the word
-        this.writeWord = function () {
-
-            var chars = word.chars;
-            var lrow = this.row;
-            var lcol = this.col;
-            for (var i = 0; i < word.size; i++) {
-                var c = new Cell();
-                c.value = chars[i];
-                this.cells[lrow++][lcol--] = c;
-                word.containedIn(c);
-                word.isPlaced = true;
-            }
-
-        }
-
-        //try even harder, check if this word can be placed by overlapping cells with same content
-        this.isWordOverlapPossible = function (row, word) {
-            return -1; //TODO: implement
-        }
-
-        //check if word will fit at the chosen location
-        this.willWordFit = function () {
-            var isFree = false;
-            var freeCounter = 0;
-            var chars = this.word.chars;
-            var lrow = this.row;
-            var lcol = this.col;
-            var i = 0;
-            while (lcol >= 0 && lrow < this.grid.size()) {
-                if (this.cells[lrow][lcol].isUnwritten() || this.cells[lrow][lcol] == chars[i++]) {
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        isFree = true;
-                        break;
-                    }
-                }
-                else {
-                    break;
-                }
-                lrow++;
-                lcol--;
-
-            }
-            return isFree;
-        }
-
-        //try harder, check if there is contigous space anywhere on this line.
-        this.findContigousSpace = function (xrow, xcol, word) {
-            var freeLocation = false;
-            var freeCounter = 0;
-            var chars = word.chars;
-            var lrow = xrow;
-            var lcol = xcol;
-
-            while (lrow > 0 && lcol < this.size - 1) {
-                lrow--;
-                lcol++;
-            }
-            var i = 0;
-            while (lcol >= 0 && lrow < this.grid.size()) {
-                if (this.cells[lrow][lcol].isUnwritten() || this.cells[lrow][lcol] == chars[i++]) {
-                    freeCounter++;
-                    if (freeCounter == word.size) {
-                        freeLocation = true;
-                        break;
-                    }
-                }
-                else {
-                    freeCounter = 0;
-                }
-                lrow++;
-                lcol--;
-                //            if (lcol <= 0 || lrow > this.size-1) {
-                //                break;
-                //            }
-            }
-            if (freeLocation) {
-                lrow = lrow - word.size + 1;
-                lcol = lcol + word.size - 1;
-            }
-            return [freeLocation, lrow, lcol];
-
-        }
-    }//RightDiagonalPopulator
-
-    /*
-     * Container for the Entire Model
-     */
-    function Model() {
-        this.grid = null;
-        this.wordList = null;
-
-        this.init = function (grid, list) {
-            this.grid = grid;
-            this.wordList = list;
-
-            for (var i = 0; i < this.wordList.size(); i++) {
-                grid.put(Util.random(this.grid.size()), Util.random(this.grid.size()), this.wordList.get(i));
-            }
-
-        }
-
-    }//Model
-
-    /*
-     * Represents a word on the grid
-     */
-    function Word(val) {
-        this.value = val.toUpperCase();
-        this.originalValue = this.value;
-        this.isFound = false;
-        this.cellsUsed = new Array();
-
-        this.isPlaced = false;
-        this.row = -1;
-        this.col = -1;
-        this.size = -1;
-        this.chars = null;
-
-        this.init = function () {
-            this.chars = this.value.split("");
-            this.size = this.chars.length;
-        }
-        this.init();
-
-        this.containedIn = function (cell) {
-            this.cellsUsed.push(cell);
-        }
-
-
-
-        this.checkIfSimilar = function (w) {
-            if (this.originalValue == w || this.value == w) {
-                this.isFound = true;
-                return true;
-            }
-            return false;
-        }
-
-
-    }
-
-    /*
-     * Represents the list of words to display
-     */
-    function WordList() {
-        this.words = new Array();
-
-        this.loadWords = function (csvwords) {
-            var $n = this.words;
-            $(csvwords.split(",")).each(function () {
-                $n.push(new Word(this));
-            });
-
-        }
-
-        this.add = function (word) {
-            //here's where we reverse the letters randomly
-            if (Math.random() * 10 > 5) {
-                var s = "";
-                for (var i = word.size - 1; i >= 0; i--) {
-                    s = s + word.value.charAt(i);
-                }
-                word.value = s;
-                word.init();
-            }
-            this.words[this.words.length] = word;
-        }
-
-        this.size = function () {
-            return this.words.length;
-        }
-
-        this.get = function (index) {
-            return this.words[index];
-        }
-
-        this.isWordPresent = function (word2check) {
-            for (var x = 0; x < this.words.length; x++) {
-                if (this.words[x].checkIfSimilar(word2check)) return x;
-            }
-            return -1;
-        }
-    }
-
-    /*
-     * Utility class
-     */
-    var Util = {
-        random: function (max) {
-            return Math.floor(Math.random() * max);
-        },
-
-        log: function (msg) {
-            $("#logger").append(msg);
-        }
-    }
-
-
-    //------------------------------------------------------------------------------
-    // OBJECTS RELATED TO THE CONTROLLER
-    //------------------------------------------------------------------------------
-    /*
-     * Main controller that interacts with the Models and View Helpers to render and
-     * control the game
-     */
-    var GameWidgetHelper = {
-        prepGrid: function (size, words) {
-            var grid = new Grid();
-            grid.initializeGrid(size);
-
-            var wordList = new WordList();
-            wordList.loadWords(words);
-
-            var model = new Model();
-            model.init(grid, wordList);
-            grid.fillGrid();
-            return model;
-
-        },
-
-        renderGame: function (container, model) {
-            var grid = model.grid;
-            var cells = grid.cells;
-
-
-            var puzzleGrid = "<div id='rf-searchgamecontainer'><table id='rf-tablegrid' cellspacing=0 cellpadding=0 class='rf-tablestyle'>";
-            for (var i = 0; i < grid.size(); i++) {
-                puzzleGrid += "<tr>";
-                for (var j = 0; j < grid.size(); j++) {
-                    puzzleGrid += "<td  class='rf-tgrid'>" + cells[i][j].value + "</td>";
-                }
-                puzzleGrid += "</tr>";
-            }
-            puzzleGrid += "</table></div>";
-            $(container).append(puzzleGrid);
-
-            var x = 0;
-            var y = 0;
-            $("tr", "#rf-tablegrid").each(function () {
-                $("td", this).each(function (col) {
-                    var c = cells[x][y++];
-                    $.data(this, "cell", c);
-                    c.td = this;
-                })
-                y = 0;
-                x++;
-            });
-
-            var words = "<div id='rf-wordcontainer'><ul>"
-            $(model.wordList.words).each(function () {
-                words += '<li class=rf-p' + this.isPlaced + '>' + this.originalValue + '</li>';
-            });
-            words += "</ul></div>";
-
-            $(container).append(words);
-
-
-        },
-
-        signalWordFound: function (idx) {
-            var w = $("li").get(idx);
-            Visualizer.signalWordFound(w);
-        }
-
-    }
-
-
-})(jQuery);
-
-
-/*
- * jQuery UI Touch Punch 0.2.2
- *
- * Copyright 2011, Dave Furfero
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- * Depends:
- *  jquery.ui.widget.js
- *  jquery.ui.mouse.js
- */
-(function (b) { b.support.touch = "ontouchend" in document; if (!b.support.touch) { return; } var c = b.ui.mouse.prototype, e = c._mouseInit, a; function d(g, h) { if (g.originalEvent.touches.length > 1) { return; } g.preventDefault(); var i = g.originalEvent.changedTouches[0], f = document.createEvent("MouseEvents"); f.initMouseEvent(h, true, true, window, 1, i.screenX, i.screenY, i.clientX, i.clientY, false, false, false, false, 0, null); g.target.dispatchEvent(f); } c._touchStart = function (g) { var f = this; if (a || !f._mouseCapture(g.originalEvent.changedTouches[0])) { return; } a = true; f._touchMoved = false; d(g, "mouseover"); d(g, "mousemove"); d(g, "mousedown"); }; c._touchMove = function (f) { if (!a) { return; } this._touchMoved = true; d(f, "mousemove"); }; c._touchEnd = function (f) { if (!a) { return; } d(f, "mouseup"); d(f, "mouseout"); if (!this._touchMoved) { d(f, "click"); } a = false; }; c._mouseInit = function () { var f = this; f.element.bind("touchstart", b.proxy(f, "_touchStart")).bind("touchmove", b.proxy(f, "_touchMove")).bind("touchend", b.proxy(f, "_touchEnd")); e.call(f); }; })(jQuery);
-
-
-
+}
+
+
+// start of x & y, end of x & y.  
+var sX, sY, eX, eY, canvas, ctx, height, width, diff;
+var r = 14;
+var n = Math.sqrt((r * r) / 2);
+var strokeColor = "#0090c5";
+var isMouseDown = false;
+var mouseMoved = false;
 
 $(document).ready(function () {
-    var words = "cold,gas,radiator,heating,boiler,frozen,energy,power,scarf,home,insulation,warmth";
-    //attach the game to a div
-    $("#theGrid").wordsearchwidget({
-        "wordlist": words,
-        "gridsize": 12,
-        "width": 300
+    $("#c").on("mousedown mouseup mousemove mouseleave", function (e) {
+        e.preventDefault();
+        //console.log(e);
+        if (e.type == "mousedown") {
+            setCanvas("c");
+            isMouseDown = true;
+
+            // Used for Firefox
+            sX = e.offsetX || e.clientX - $(e.target).offset().left;
+            sY = e.offsetY || e.clientY - $(e.target).offset().top;
+            // adjust the center of the arc 
+            sX -= (sX % 20);
+            sY -= (sY % 20);
+            if (!(sX % 40)) sX += 20;
+            if (!(sY % 40)) sY += 20;
+
+            setPos(sX, sY, "start");
+            draw(e.type);
+        }
+        else if (e.type == "mousemove") {
+            if (isMouseDown) {
+                mouseMoved = true;
+                eX = e.offsetX || e.clientX - $(e.target).offset().left;
+                eY = e.offsetY || e.clientY - $(e.target).offset().top;
+                draw(e.type);
+            }
+        }
+        else if (e.type == "mouseup") {
+            isMouseDown = false;
+            ctx.clearRect(0, 0, width, height);
+            if (mouseMoved) {
+                mouseMoved = false;
+
+                eX -= eX % 20;
+                eY -= eY % 20;
+                if (!(eX % 40)) eX += 20;
+                if (!(eY % 40)) eY += 20;
+
+                // draw the last line and clear the canvas to check and see if its the 
+                // correct word
+                draw(e.type);
+                ctx.clearRect(0, 0, width, height);
+                // if a correct word has been highlighted change the canvas to 
+                // the permanent one and redraw the arcs and lines.  Then scratch the 
+                // word on the right.
+                if (checkWord()) {
+                    setCanvas("a");
+                    draw(e.type);
+                    scratchWord();
+                    // Check if the game is over
+                    if (isEndOfGame()) {
+                        alert("Good job!");
+                    }
+                }
+
+            }
+        }
+        else if (e.type == "mouseleave") {
+            isMouseDown = false;
+            draw(e.type);
+        }
+
     });
-});
+})
+
+// This function is called when lines need to be drawn on the game
+function draw(f) {
+    // used to draw an arc.  takes in two numbers that represent the beginning
+    // and end of the arc
+    function drawArc(xArc, yArc, num1, num2) {
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(xArc, yArc, r, num1 * Math.PI, num2 * Math.PI);
+        ctx.strokeStyle = strokeColor;
+        ctx.stroke();
+    }
+
+    // used to draw the two lines around letters
+    function drawLines(mX1, mY1, lX1, lY1, mX2, mY2, lX2, lY2) {
+        ctx.beginPath();
+        ctx.moveTo(mX1, mY1);
+        ctx.lineTo(lX1, lY1);
+        ctx.moveTo(mX2, mY2);
+        ctx.lineTo(lX2, lY2);
+        ctx.stroke();
+    }
+    // Check and see what event occured and create the action that belongs to that 
+    // event.
+    if (f == "mousedown") {
+        ctx.clearRect(0, 0, width, height);
+        drawArc(sX, sY, 0, 2);
+    }
+    else if (f == "mousemove" || f == "mouseup") {
+        /* 
+        This is to show the rise over run I used to get the limits for 
+        all eight directions.  This tells the conditionals when to activiate
+        the lines and in which direction.
+        rise = (sY - eY) * Math.sqrt(6);
+        run = sX - eX;
+         */
+        limit = ((sY - eY) * Math.sqrt(6)) / (sX - eX);
+        // UP
+        if ((limit > 6 || limit < -6) && eY < sY) {
+            // clear the canvas
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            drawArc(sX, sY, 0, 1); // draw bottom arc
+            drawArc(sX, eY, 1, 2); // draw top arc
+
+            // draw the two lines that connect the bottom and the top arcs
+            drawLines(sX + r, sY, sX + r, eY, sX - r, sY, sX - r, eY);
+
+            // if the player is selecting this as the last letter set its position 
+            // for wordcheck
+            if (f == "mouseup") setPos(sX, eY, "end");
+        }
+        // DOWN
+        if ((limit < -6 || limit > 6) && eY > sY) {
+            // clear the canvas
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            drawArc(sX, sY, 1, 2);
+            drawArc(sX, eY, 0, 1);
+            drawLines(sX + r, sY, sX + r, eY, sX - r, sY, sX - r, eY);
+            if (f == "mouseup") setPos(sX, eY, "end");
+        }
+        // LEFT
+        if ((limit < 1 && limit > -1) && eX < sX) {
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            drawArc(sX, sY, 1.5, 0.5);
+            drawArc(eX, sY, 0.5, 1.5);
+            drawLines(sX, sY - r, eX, sY - r, sX, sY + r, eX, sY + r);
+            if (f == "mouseup") setPos(eX, sY, "end");
+        }
+        // RIGHT
+        if ((limit < 1 && limit > -1) && eX > sX) {
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            drawArc(sX, sY, 0.5, 1.5);
+            drawArc(eX, sY, 1.5, 0.5);
+            drawLines(sX, sY - r, eX, sY - r, sX, sY + r, eX, sY + r);
+            if (f == "mouseup") setPos(eX, sY, "end");
+        }
+        /* 
+        This is for the NW diagonal lines it requires a special number 
+        n that is the adjacent lengths of a 45-45-90 triangle needed to draw these
+        lines.  It also creates a diff for the difference between the 
+        start and the end of the arcs 
+        */
+        // NW
+        if ((limit > 1 && limit < 6) && (eX < sX && eY < sY)) {
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            diff = sX - eX;
+            drawArc(sX, sY, 1.75, 0.75);
+            drawArc(sX - diff, sY - diff, 0.75, 1.75);
+            drawLines(sX + n, sY - n, sX + n - diff, sY - n - diff,
+                sX - n, sY + n, sX - n - diff, sY + n - diff);
+            if (f == "mouseup") setPos(sX - diff, sY - diff, "end");
+        }
+
+        // NE
+        if ((limit < -1 && limit > -6) && (eX > sX && eY < sY)) {
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            diff = sX - eX;
+            drawArc(sX, sY, 0.25, 1.25);
+            drawArc(sX - diff, sY + diff, 1.25, 0.25);
+            drawLines(sX + n, sY + n, sX + n - diff, sY + n + diff,
+                sX - n, sY - n, sX - n - diff, sY - n + diff);
+            if (f == "mouseup") setPos(sX - diff, sY + diff, "end");
+        }
+        // SW
+        if ((limit < -1 && limit > -6) && (eX < sX && eY > sY)) {
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            diff = sX - eX;
+            drawArc(sX, sY, 1.25, 0.25);
+            drawArc(sX - diff, sY + diff, 0.25, 1.25);
+            drawLines(sX + n, sY + n, sX + n - diff, sY + n + diff,
+                sX - n, sY - n, sX - n - diff, sY - n + diff);
+            if (f == "mouseup") setPos(sX - diff, sY + diff, "end");
+        }
+        // SE
+        if ((limit > 1 && limit < 6) && (eX > sX && eY > sY)) {
+            if (f == "mousemove") ctx.clearRect(0, 0, width, height);
+            diff = sX - eX;
+            drawArc(sX, sY, 0.75, 1.75);
+            drawArc(sX - diff, sY - diff, 1.75, 0.75);
+            drawLines(sX + n, sY - n, sX + n - diff, sY - n - diff,
+                sX - n, sY + n, sX - n - diff, sY + n - diff);
+            if (f == "mouseup") setPos(sX - diff, sY - diff, "end");
+        }
+    }
+
+    else if (f == "mouseleave") {
+        setCanvas("c");
+        ctx.clearRect(0, 0, width, height);
+    }
+}
+
+
+// change the canvas between the bottom and top layer
+function setCanvas(id) {
+    canvas = document.getElementById(id);
+    ctx = canvas.getContext("2d");
+    width = canvas.width;
+    height = canvas.height;
+}
+
+
+// set the offsets to numbers that match the class names of each letter
+function setPos(x, y, loc) {
+    tX = Math.floor((x / 8) / 5) + 1;
+    tY = Math.floor((y / 8) / 5) + 1;
+    if (loc == "start") click.startPos = (tY - 1) * 20 + tX;
+    else click.endPos = (tY - 1) * 20 + tX;
+}
+
+
+// verify if the word chosen is the correct one. If a player decides
+// to highlight a word starting from last letter to first this function
+// will also support that ability
+function checkWord() {
+    // clears the pos array so that a player cannot highlight the same word twice
+    function clearPos(p) {
+        p.start = p.end = 0;
+        return true;
+    }
+    // user highlights from first letter to last
+    if (pos.some(function (o) {
+        return o.start === click.startPos &&
+            o.end === click.endPos && clearPos(o);
+    })) {
+        return true;
+    }
+    // if user highlights from last letter to first
+    else if (pos.some(function (o) {
+        return o.start === click.endPos &&
+            o.end === click.startPos && clearPos(o);
+    })) {
+        return true;
+    }
+    else return false;
+}
+
+// scratch the word on the right out when the word is found on the left
+function scratchWord() {
+    for (var i = 0; i < words.length; i++) {
+        if ((click.startPos === words[i].start && click.endPos === words[i].end) ||
+            (click.startPos === words[i].end && click.endPos === words[i].start)) {
+            // little hack here
+            $(".words").find("." + i).addClass("strike");
+        }
+    }
+    // check if the game is over
+
+}
+
+function isEndOfGame() {
+    return pos.every(function (o) { return o.start === 0 && o.end === 0; });
+}

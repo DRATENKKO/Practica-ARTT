@@ -1,4 +1,4 @@
-{% extends 'app/base.html' %}
+{% extends 'app/base2.html' %}
 {% load static%}
 
 {% block css%}
@@ -7,9 +7,39 @@
 
 {% block contenido %}
 <link rel="stylesheet" href="{% static 'app/css/sopaletras.css' %}">
-    <div class="container"> 
-        <div id="theGrid"></div>
-    <div/>
-    <script type="text/javascript" src="{% static 'app/js/jquery.min.js' %}"></script>
+
+<html lang="es">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+<body>
+    <button id="reveal-words"style="margin-left: 650px;">Ver solución</button>
+	<div id="main">
+		<div class="leftt">
+    <div class="letters">
+        <canvas id="a" width="800" height="800"></canvas>
+        <canvas id="c" width="800" height="800"></canvas>
+    </div>
+    </div>
+    <div class="right">
+        <div class="words">
+        </div>
+    </div>
+</div>
+<div>
+    {% if request.user.is_authenticated %}
+    {% for s in Sopa %}
+        <input id="ff{{word}}" class="word" type="text" value="{{s.word}}"/>   
+        <input class="direction" value="{{ s.direction }}" />
+        <input class="start" value="{{ s.start }}" />
+        <div/>
+        </div>
+    {% endfor %}
+{% else %}
+
+{% endif %}
+</div>
+</body>
+</html>
     <script src="{% static 'app/js/sopaletras.js' %}"></script>
 {% endblock %}
