@@ -11,7 +11,6 @@ var words = [];
 // Get all the input elements with the class "word"
 var wordElements = document.getElementsByClassName("word");
 
-
 // Iterate over the input elements
 for (var i = 0; i < wordElements.length; i++) {
     // Get the current input element
@@ -26,6 +25,7 @@ for (var i = 0; i < wordElements.length; i++) {
         start = parseInt(start);
     }
     // Add the word, direction, and start position to the words array
+    word = word.toUpperCase();
     words.push({ "word": word, "direction": direction, "start": start });
 }
 
