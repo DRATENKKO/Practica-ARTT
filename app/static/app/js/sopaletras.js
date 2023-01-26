@@ -206,7 +206,8 @@ $(document).ready(function () {
                     scratchWord();
                     // Check if the game is over
                     if (isEndOfGame()) {
-                        alert("Good job!");
+                        
+                        alert("Buen trabajo!");
                     }
                 }
 

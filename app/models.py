@@ -7,7 +7,7 @@ class Region(models.Model):
     nombre_region = models.CharField(max_length=100)
     
     def __str__(self):
-        return str(self.id_region)
+        return str(self.nombre_region)
 #PROVINCIA
 class Provincia(models.Model):
     id_provincia = models.AutoField(primary_key=True)
@@ -15,7 +15,7 @@ class Provincia(models.Model):
     id_region = models.ForeignKey(Region, on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.id_comuna)
+        return str(self.nombre_provincia)
 #COMUNA
 class Comuna(models.Model):
     id_comuna = models.AutoField(primary_key=True)
@@ -23,7 +23,7 @@ class Comuna(models.Model):
     id_provincia = models.ForeignKey(Provincia, on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.id_comuna)
+        return str(self.nombre_comuna)
 #INSTITUCION
 class Institucion(models.Model):
     id_institucion = models.AutoField(primary_key=True)
@@ -73,10 +73,10 @@ class UsuarioManager(UserManager):
         return usuario 
 #USUARIO
 class Usuario(AbstractUser):
-    id_telegram = models.CharField(max_length=100, null=True, default=0)
+    id_telegram = models.CharField(max_length=100, null=True, default='@')
     Tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete= models.CASCADE, null=True)
-    telefono = models.CharField(max_length=100, null=True, default=0)
-    direccion = models.CharField(max_length=100, null=True, default=0)
+    telefono = models.CharField(max_length=100, null=True, default='+569')
+    direccion = models.CharField(max_length=100, null=True,)
     id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
 
     def __str__(self):
@@ -148,7 +148,7 @@ class Intensidad(models.Model):
 #PACIENTE_DOCUMENTO
 class Paciente_documento(models.Model):
     id_paciente_documento = models.AutoField(primary_key=True)
-    autorizado = models.CharField(models.BooleanField(("Autorizado" or "No Autorizado")))
+    autorizado = models.CharField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True)
     documento_id = models.CharField(max_length=100)
     id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
