@@ -7,7 +7,7 @@ class Region(models.Model):
     nombre_region = models.CharField(max_length=100)
     
     def __str__(self):
-        return str(self.id_region)
+        return str(self.nombre_region)
 #PROVINCIA
 class Provincia(models.Model):
     id_provincia = models.AutoField(primary_key=True)
@@ -15,7 +15,7 @@ class Provincia(models.Model):
     id_region = models.ForeignKey(Region, on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.id_comuna)
+        return str(self.nombre_provincia)
 #COMUNA
 class Comuna(models.Model):
     id_comuna = models.AutoField(primary_key=True)
@@ -23,7 +23,16 @@ class Comuna(models.Model):
     id_provincia = models.ForeignKey(Provincia, on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.id_comuna)
+        return str(self.nombre_comuna)
+#INSTITUCION
+class Institucion(models.Model):
+    id_institucion = models.AutoField(primary_key=True)
+    nombre_institucion = models.CharField(max_length=100)
+    descripcion_institucion = models.CharField(max_length=100)
+    id_comuna = models.ForeignKey(Comuna, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_institucion)
 #TIPO DE JUEGO
 class Tipo_juego(models.Model):
     id_tipo_juego = models.AutoField(primary_key=True)
@@ -64,8 +73,11 @@ class UsuarioManager(UserManager):
         return usuario 
 #USUARIO
 class Usuario(AbstractUser):
+    id_telegram = models.CharField(max_length=100, null=True, default='@')
     Tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete= models.CASCADE, null=True)
-    id_telegram = models.CharField(max_length=100, null=True, default=0)
+    telefono = models.CharField(max_length=100, null=True, default='+569')
+    direccion = models.CharField(max_length=100, null=True,)
+    id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
 
     def __str__(self):
         return self.username
@@ -74,22 +86,180 @@ class Usuario(AbstractUser):
         return True
 
     def has_module_perms(self, app_label):
-        return True   
+        return True
+#HIPERTENSION
+class Hipertension(models.Model):
+    id_hipertension = models.AutoField(primary_key=True)
+    estado_hipertension = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_hipertension)
+#DIABETES
+class Diabetes(models.Model):
+    id_diabetes = models.AutoField(primary_key=True)
+    tipo_diabetes = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_diabetes)
 #PACIENTE
 class Paciente(models.Model):
     id_paciente = models.AutoField(primary_key=True)
     rut_paciente = models.CharField(max_length=100)
-    nombre_paciente = models.CharField(max_length=100)
-    apellido_paciente = models.CharField(max_length=100)
-    direccion_paciente = models.CharField(max_length=100)
-    correo_paciente = models.CharField(max_length=100)
-    telefono_paciente = models.CharField(max_length=100)
-    whatsapp_paciente = models.CharField(max_length=100)
     telegram_paciente = models.CharField(max_length=100)
+    diabetes_id = models.CharField(max_length=100)
+    hipertension = models.CharField(max_length=100)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    paciente_familiar = models.CharField(max_length=100)
+    whatsapp_paciente = models.CharField(max_length=100)
     celular_paciente = models.CharField(max_length=100)
     
     def __str__(self):
         return str(self.id_enfermera)
+#FAMILIAR
+class Familiar(models.Model):
+    id_familiar = models.AutoField(primary_key=True)
+    rut_familiar = models.CharField(max_length=100)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_familiar)
+#FAMILIAR_PACIENTE
+class Familiar_paciente(models.Model):
+    id_familiar_paciente = models.AutoField(primary_key=True)
+    id_familiar = models.ForeignKey(Familiar, on_delete=models.CASCADE)
+    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    parentesco = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_familiar_paciente)
+#INTENSIDAD
+class Intensidad(models.Model):
+    id_intensidad = models.AutoField(primary_key=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    url_archivo_intensidad = models.CharField(max_length=100)
+    intensidad = models.CharField(max_length=100)
+    mindb = models.CharField(max_length=100)
+    maxdb = models.CharField(max_length=100)
+    comentario = models.CharField(max_length=100)
+    Paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_intensidad)
+#PACIENTE_DOCUMENTO
+class Paciente_documento(models.Model):
+    id_paciente_documento = models.AutoField(primary_key=True)
+    autorizado = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    documento_id = models.CharField(max_length=100)
+    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_paciente_documento)
+#APP DOCUMENTO
+class App_documento(models.Model):
+    id_app_documento = models.AutoField(primary_key=True)
+    titulo = models.CharField(max_length=100)
+    documento = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100)
+    qr = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_app_documento)
+#VOCALIZACION
+class Vocalizacion(models.Model):
+    id_vocalizacion = models.AutoField(primary_key=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    url_archivo_vocalizacion = models.CharField(max_length=100)
+    duracion = models.CharField(max_length=100)
+    bpminute = models.CharField(max_length=100)
+    bpmeasure = models.CharField(max_length=100)
+    comentario = models.CharField(max_length=100)
+    Paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_vocalizacion)
+#APP ENFERMERA NEUROLOGO
+class App_enfermera_neurologo(models.Model):
+    id_app_enfermera_neurologo = models.AutoField(primary_key=True)
+    username_enfermera = models.CharField(max_length=100)
+    username_neurologo = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_app_enfermera_neurologo)
+#APP ENFERMERA PACIENTE
+class App_enfermera_paciente(models.Model):
+    id_app_enfermera_paciente = models.AutoField(primary_key=True)
+    username_enfermera = models.CharField(max_length=100)
+    username_paciente = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_app_enfermera_paciente)
+#APP TIPO TERAPIA
+class App_tipo_terapia(models.Model):
+    id_app_tipo_terapia = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_app_tipo_terapia)
+#TERAPIA
+class Terapia(models.Model):
+    id_terapia = models.AutoField(primary_key=True)
+    horarios = models.CharField(max_length=100)
+    fonoaudiologo_id = models.CharField(max_length=100)
+    paciente_id = models.CharField(max_length=100)
+    id_app_tipo_terapia = models.ForeignKey(App_tipo_terapia, on_delete=models.CASCADE)
+    #  ??? id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_terapia)
+#RECORDATORIO TERAPIA
+class Recordatorio_terapia(models.Model):
+    id_recordatorio_terapia = models.AutoField(primary_key=True)
+    hora_recordatorio = models.CharField(max_length=100)
+    receta_id = models.CharField(max_length=100)
+    id_terapia = models.ForeignKey(Terapia, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_recordatorio_terapia)
+#AUDIO
+class Audio(models.Model):
+    id_audio = models.AutoField(primary_key=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    url_archivo_audio = models.CharField(max_length=100)
+    jitter_ppq5 = models.CharField(max_length=100)
+    jitter_rap = models.CharField(max_length=100)
+    maximum_pitch = models.CharField(max_length=100)
+    error_jitter_ppq5 = models.CharField(max_length=100)
+    error_jitter_rap = models.CharField(max_length=100)
+    error_maximum_pitch = models.CharField(max_length=100)
+    jitter_ppq5_IA = models.CharField(max_length=100)
+    jitter_rap_IA = models.CharField(max_length=100)
+    maximum_pitch_IA = models.CharField(max_length=100)
+    error_jitter_ppq5_IA = models.CharField(max_length=100)
+    error_jitter_rap_IA = models.CharField(max_length=100)
+    error_maximum_pitch_IA = models.CharField(max_length=100)
+    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_audio)
+#PROFESIONAL SALUD
+class Profesional_salud(models.Model):
+    id_profesional_salud = models.AutoField(primary_key=True)
+    rut_profesional_salud = models.CharField(max_length=100)
+    id_institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_profesional_salud)
+#PROFESIONAL PACIENTE
+class Profesional_paciente(models.Model):
+    id_profesional_paciente = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+    id_profesional_salud = models.ForeignKey(Profesional_salud, on_delete=models.CASCADE)
+    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_profesional_paciente)
 #TERAPISTA
 class Terapista(models.Model):
     id_enfermera = models.AutoField(primary_key=True)
@@ -159,11 +329,3 @@ class Sopa_letras(models.Model):
     
     def __str__(self):
         return str(self.id_sopa)
-
-#TRIVIASOPALETRAS
-class Trivia_sopa_letras(models.Model):
-    id_trivia_sopa = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return str(self.id_trivia_sopa)

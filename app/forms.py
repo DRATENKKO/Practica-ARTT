@@ -1,10 +1,13 @@
 from django import forms
 from .models import *
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm , ReadOnlyPasswordHashField
 from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
+from django.utils.crypto import get_random_string
 
-# MEMORICE
+
 class Resultado_Form(forms.ModelForm):
+
     
     Resultado_1 = forms.CharField(label='Cantidad de aciertos', widget=forms.TextInput(
         attrs={
@@ -31,41 +34,59 @@ class Resultado_Form(forms.ModelForm):
         model = Resultado_juego
         fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
 
+class CustomUserChangeForm(forms.ModelForm):
+    
+    password = ReadOnlyPasswordHashField()
 
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email', )
+    def clean_password(self):
+        return self.initial["password"]
 
 class CustomUserCreationForm(forms.ModelForm):
+    password = ReadOnlyPasswordHashField()
 
-    username = forms.CharField(label='Nombre de usuario', widget=forms.TextInput(
+    username = forms.CharField(label='Usuario', widget=forms.TextInput(
         attrs={
             'class': 'form-control mb-2',
             'placeholder': 'Ingrese su nombre de usuario',
             'id': 'username'
         }))
 
-    first_name = forms.CharField(label=' ingrese su nombre', widget=forms.TextInput(
+    first_name = forms.CharField(label='Nombres', widget=forms.TextInput(
         attrs={
             'class': 'form-control mb-2',
-            'placeholder': 'Ingrese su nombre de usuario',
+            'placeholder': 'Ingrese sus nombres',
             'id': 'first_name'
         }))
 
-    last_name = forms.CharField(label=' ingrese su apellido', widget=forms.TextInput(
+    last_name = forms.CharField(label='Apellidos', widget=forms.TextInput(
         attrs={
             'class': 'form-control mb-2',
-            'placeholder': 'Ingrese su nombre de usuario',
+            'placeholder': 'Ingrese sus apellidos',
             'id': 'last_name'
         }))
 
-    email = forms.EmailField(label='correo electronico', widget=forms.EmailInput(attrs={
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={
         'class': 'form-control mb-2',
         'placeholder': 'Ingrese su correo electronico',
         'id': 'email'
     }))
 
-    id_telegram = forms.CharField(label='telegram', widget=forms.TextInput(
+    id_telegram = forms.CharField(label='Telegram', widget=forms.TextInput(
         attrs={
             'class': 'form-control mb-2',
             'placeholder': 'Ingrese su telegram',
+            'id': 'password'
+        }))
+
+
+
+    direccion = forms.CharField(label='direccion', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control mb-2',
+            'placeholder': 'Ingrese su direccion',
             'id': 'password'
         }))
 
@@ -75,10 +96,9 @@ class CustomUserCreationForm(forms.ModelForm):
             'placeholder': 'Ingrese Contraseña',
             'id': 'password'
         }))
-
     class Meta:
         model = Usuario
-        fields = 'username', 'first_name', 'last_name', 'email', 'id_telegram', 'password'
+        fields = 'username', 'first_name', 'last_name', 'email', 'id_telegram','telefono','direccion','id_comuna', 'password'
 
     def clean_password(self):
         """ validacion de contraseña
