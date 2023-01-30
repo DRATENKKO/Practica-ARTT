@@ -73,7 +73,6 @@ class UsuarioManager(UserManager):
         return usuario 
 #USUARIO
 class Usuario(AbstractUser):
-    id = models.AutoField(primary_key=True)
     id_telegram = models.CharField(max_length=100, null=True, default='@')
     Tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete= models.CASCADE, null=True)
     telefono = models.CharField(max_length=100, null=True, default='+569')
@@ -315,7 +314,7 @@ class Trivia(models.Model):
     ordinal = models.CharField(max_length=100)
     pregunta_trivia = models.CharField(max_length=100)
     respuesta_trivia = models.CharField(max_length=100,null=True)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.id_trivia)
@@ -326,7 +325,7 @@ class Sopa_letras(models.Model):
     word = models.CharField(max_length=50)
     direction = models.CharField(max_length=50)
     start = models.CharField(max_length=50)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.id_sopa)

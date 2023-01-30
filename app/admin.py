@@ -36,10 +36,10 @@ class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]
 
 class TriviaAdmin(admin.ModelAdmin):
-    list_display = ["id_trivia","id_usuario", "ordinal","pregunta_trivia", "respuesta_trivia"]
+    list_display = ["id_trivia","user", "ordinal","pregunta_trivia", "respuesta_trivia"]
 
 class Sopa_letrasAdmin(admin.ModelAdmin):
-    list_display = ["id_sopa","id_usuario","pregunta_sopa", "word","direction", "start"]
+    list_display = ["id_sopa","user","pregunta_sopa", "word","direction", "start"]
 
 class TerapistaAdmin(admin.ModelAdmin):
     list_display = ["id_enfermera", "rut_enfermera", "nombre_enfermera", "apellido_enfermera", "direccion_enfermera", "correo_enfermera", "telefono_enfermera","whatsapp_enfermera","telegram_enfermera","celular_enfermera"]
