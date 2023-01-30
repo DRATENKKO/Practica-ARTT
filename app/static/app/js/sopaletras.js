@@ -11,6 +11,8 @@ var words = [];
 // Get all the input elements with the class "word"
 var wordElements = document.getElementsByClassName("word");
 
+let mostrarTiempo = document.getElementById('t-restante');
+
 // Iterate over the input elements
 for (var i = 0; i < wordElements.length; i++) {
     // Get the current input element
@@ -74,6 +76,18 @@ $("#reveal-words").on("click", function() {
         $(".letters").find("." + revealed[i]).css("color", "#ff4486");
     }
 });
+
+function contarTiempo() {
+    tiempoRegresivoId = setInterval(() => {
+        timer--;
+        mostrarTiempo.innerHTML = `Tiempo ${timer} segundos`;
+        if (timer == 0) {
+            clearInterval(tiempoRegresivoId);
+            bloquearTarjetas();
+            loseAudio.play();
+        }
+    }, 1000);
+}
 
 // Prepare the wordsearch with random letters and word layout
 $(document).ready(function () {
@@ -206,7 +220,6 @@ $(document).ready(function () {
                     scratchWord();
                     // Check if the game is over
                     if (isEndOfGame()) {
-                        
                         alert("Buen trabajo!");
                     }
                 }
