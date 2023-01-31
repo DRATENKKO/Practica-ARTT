@@ -14,7 +14,23 @@ class PacienteAdmin(admin.ModelAdmin):
 class Paciente_documentoAdmin(admin.ModelAdmin):
     list_display = ["id_paciente_documento", "autorizado", "timestamp","documento_id","id_paciente"]
 
+class App_tipo_terapiaAdmin(admin.ModelAdmin):
+    list_display = ["id_app_tipo_terapia", "descripcion"]
+
+class TerapiaAdmin(admin.ModelAdmin):
+    list_display = ["id_terapia", "horarios","fonoaudiologo_id","paciente_id","id_app_tipo_terapia"]
+
+class Recordatorio_terapiaAdmin(admin.ModelAdmin):
+    list_display = ["id_recordatorio_terapia", "hora_recordatorio","receta_id","id_terapia"]
+
+class IntensidadAdmin(admin.ModelAdmin):
+    list_display = ["id_intensidad", "timestamp","url_archivo_intensidad","intensidad","mindb","maxdb","comentario","Paciente"]
+
 admin.site.register(Hipertension,HipertensionAdmin)
 admin.site.register(Diabetes,DiabetesAdmin)
 admin.site.register(Paciente,PacienteAdmin)
 admin.site.register(Paciente_documento,Paciente_documentoAdmin)
+admin.site.register(App_tipo_terapia,App_tipo_terapiaAdmin)
+admin.site.register(Terapia,TerapiaAdmin)
+admin.site.register(Recordatorio_terapia,Recordatorio_terapiaAdmin)
+admin.site.register(Intensidad,IntensidadAdmin)

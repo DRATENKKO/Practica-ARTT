@@ -57,23 +57,11 @@ class ComunaAdmin(admin.ModelAdmin):
 class InstitucionAdmin(admin.ModelAdmin):
     list_display = ["id_institucion", "nombre_institucion", "descripcion_institucion", "id_comuna"]
 
-class HipertensionAdmin(admin.ModelAdmin):
-    list_display = ["id_hipertension", "estado_hipertension"]
-
-class DiabetesAdmin(admin.ModelAdmin):
-    list_display = ["id_diabetes", "tipo_diabetes"]
-
-class PacienteAdmin(admin.ModelAdmin):
-    list_display = ["id_paciente", "rut_paciente", "telegram_paciente", "diabetes_id", "hipertension", "user", "paciente_familiar","whatsapp_paciente","celular_paciente"]
-
 class FamiliarAdmin(admin.ModelAdmin):
     list_display = ["id_familiar", "rut_familiar", "user"]
 
 class Familiar_pacienteAdmin(admin.ModelAdmin):
     list_display = ["Paciente","Familiar","parentesco"]
-
-class IntensidadAdmin(admin.ModelAdmin):
-    list_display = ["id_intensidad", "timestamp","url_archivo_intensidad","intensidad","mindb","maxdb","comentario","Paciente"]
 
 
 class App_documentoAdmin(admin.ModelAdmin):
@@ -88,14 +76,6 @@ class App_enfermera_neurologoAdmin(admin.ModelAdmin):
 class App_enfermera_pacienteAdmin(admin.ModelAdmin):
     list_display = ["id_app_enfermera_paciente", "username_enfermera", "username_paciente"]
 
-class App_tipo_terapiaAdmin(admin.ModelAdmin):
-    list_display = ["id_app_tipo_terapia", "descripcion"]
-
-class TerapiaAdmin(admin.ModelAdmin):
-    list_display = ["id_terapia", "horarios","fonoaudiologo_id","paciente_id","id_app_tipo_terapia"]
-
-class Recordatorio_terapiaAdmin(admin.ModelAdmin):
-    list_display = ["id_recordatorio_terapia", "hora_recordatorio","receta_id","id_terapia"]
 
 class AudioAdmin(admin.ModelAdmin):
     list_display = ["id_audio", "timestamp","url_archivo_audio","jitter_ppq5","jitter_rap","maximum_pitch","error_jitter_ppq5","error_jitter_rap","error_maximum_pitch","jitter_ppq5_IA","jitter_rap_IA","maximum_pitch_IA","error_jitter_ppq5_IA","error_jitter_rap_IA","error_maximum_pitch_IA","id_paciente"]
@@ -135,13 +115,10 @@ admin.site.register(Provincia,ProvinciaAdmin)
 admin.site.register(Comuna,ComunaAdmin)
 #INSTITUCION
 admin.site.register(Institucion,InstitucionAdmin)
-#PACIENTE
 #FAMILIAR
 admin.site.register(Familiar,FamiliarAdmin)
 #FAMILIAR PACIENTE
 admin.site.register(Familiar_paciente,Familiar_pacienteAdmin)
-#INTENSIDAD
-admin.site.register(Intensidad,IntensidadAdmin)
 #APP DOCUMENTO
 admin.site.register(App_documento,App_documentoAdmin)
 #VOCALIZACION
@@ -150,12 +127,6 @@ admin.site.register(Vocalizacion,VocalizacionAdmin)
 admin.site.register(App_enfermera_neurologo,App_enfermera_neurologoAdmin)
 #APP ENFERMERA PACIENTE
 admin.site.register(App_enfermera_paciente,App_enfermera_pacienteAdmin)
-#APP TIPO TERAPIA
-admin.site.register(App_tipo_terapia,App_tipo_terapiaAdmin)
-#TERAPIA
-admin.site.register(Terapia,TerapiaAdmin)
-#RECORDATORIO TERAPIA
-admin.site.register(Recordatorio_terapia,Recordatorio_terapiaAdmin)
 #AUDIO
 admin.site.register(Audio,AudioAdmin)
 #PROFESIONAL SALUD
