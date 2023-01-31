@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'livereload',
     'django.contrib.staticfiles',
-    'app',
     'colorfield',
     'crispy_forms',
+    'app',
+    'paciente',
 ]
 
 #LOGINBYPASS

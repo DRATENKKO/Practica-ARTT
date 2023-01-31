@@ -16,7 +16,8 @@ class UserAdmin(BaseUserAdmin):
             
         }),
     )
-    
+    list_display = ("username","id", "email", "first_name", "last_name", "is_staff")
+
 
 class Resultado_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_resultado","id_usuario", "id_juego",
@@ -69,13 +70,11 @@ class FamiliarAdmin(admin.ModelAdmin):
     list_display = ["id_familiar", "rut_familiar", "user"]
 
 class Familiar_pacienteAdmin(admin.ModelAdmin):
-    list_display = ["id_familiar_paciente", "id_familiar", "id_paciente","parentesco"]
+    list_display = ["Paciente","Familiar","parentesco"]
 
 class IntensidadAdmin(admin.ModelAdmin):
     list_display = ["id_intensidad", "timestamp","url_archivo_intensidad","intensidad","mindb","maxdb","comentario","Paciente"]
 
-class Paciente_documentoAdmin(admin.ModelAdmin):
-    list_display = ["id_paciente_documento", "autorizado", "timestamp","documento_id","id_paciente"]
 
 class App_documentoAdmin(admin.ModelAdmin):
     list_display = ["id_app_documento", "titulo", "documento","descripcion","qr"]
@@ -107,6 +106,11 @@ class Profesional_saludAdmin(admin.ModelAdmin):
 class Profesional_pacienteAdmin(admin.ModelAdmin):
     list_display = ["id_profesional_paciente", "descripcion", "id_profesional_salud","id_paciente"]
 
+class Tipo_parentescoAdmin(admin.ModelAdmin):
+    list_display = ["id_tipo_parentesco", "parentesco"]
+
+#TIPO PARENTESCO
+admin.site.register(Tipo_parentesco,Tipo_parentescoAdmin)
 #TIPO JUEGO
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
 #JUEGO
@@ -131,20 +135,13 @@ admin.site.register(Provincia,ProvinciaAdmin)
 admin.site.register(Comuna,ComunaAdmin)
 #INSTITUCION
 admin.site.register(Institucion,InstitucionAdmin)
-#HIPERTENSION
-admin.site.register(Hipertension,HipertensionAdmin)
-#DIABETES
-admin.site.register(Diabetes,DiabetesAdmin)
 #PACIENTE
-admin.site.register(Paciente,PacienteAdmin)
 #FAMILIAR
 admin.site.register(Familiar,FamiliarAdmin)
 #FAMILIAR PACIENTE
 admin.site.register(Familiar_paciente,Familiar_pacienteAdmin)
 #INTENSIDAD
 admin.site.register(Intensidad,IntensidadAdmin)
-#PACIENTE DOCUMENTO
-admin.site.register(Paciente_documento,Paciente_documentoAdmin)
 #APP DOCUMENTO
 admin.site.register(App_documento,App_documentoAdmin)
 #VOCALIZACION

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from django.contrib.auth.models import  AbstractUser, UserManager
 from django.db import models
+from paciente.models import Paciente
 #REGION
 class Region(models.Model):
     id_region = models.AutoField(primary_key=True)
@@ -79,42 +80,19 @@ class Usuario(AbstractUser):
     direccion = models.CharField(max_length=100, null=True,)
     id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
 
+
+
+    def nombre_area(self):
+        return "{}, {}, {}". format(str(self.id), self.username, self.Tipo_usuario)
+
     def __str__(self):
-        return self.username
+        return self.nombre_area()
 
     def has_perm(self,perm,obj = None):
         return True
 
     def has_module_perms(self, app_label):
         return True
-#HIPERTENSION
-class Hipertension(models.Model):
-    id_hipertension = models.AutoField(primary_key=True)
-    estado_hipertension = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return str(self.id_hipertension)
-#DIABETES
-class Diabetes(models.Model):
-    id_diabetes = models.AutoField(primary_key=True)
-    tipo_diabetes = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return str(self.id_diabetes)
-#PACIENTE
-class Paciente(models.Model):
-    id_paciente = models.AutoField(primary_key=True)
-    rut_paciente = models.CharField(max_length=100)
-    telegram_paciente = models.CharField(max_length=100)
-    diabetes_id = models.CharField(max_length=100)
-    hipertension = models.CharField(max_length=100)
-    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    paciente_familiar = models.CharField(max_length=100)
-    whatsapp_paciente = models.CharField(max_length=100)
-    celular_paciente = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return str(self.id_enfermera)
 #FAMILIAR
 class Familiar(models.Model):
     id_familiar = models.AutoField(primary_key=True)
@@ -123,12 +101,25 @@ class Familiar(models.Model):
     
     def __str__(self):
         return str(self.id_familiar)
+#TIPO_PARENTESCO
+class Tipo_parentesco(models.Model):
+    id_tipo_parentesco = models.AutoField(primary_key=True)
+    parentesco = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_tipo_parentesco) + " " + self.parentesco
 #FAMILIAR_PACIENTE
 class Familiar_paciente(models.Model):
     id_familiar_paciente = models.AutoField(primary_key=True)
-    id_familiar = models.ForeignKey(Familiar, on_delete=models.CASCADE)
-    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    parentesco = models.CharField(max_length=100)
+    paciente = models.ManyToManyField(Usuario, related_name='Paciente')
+    familiar = models.ManyToManyField(Usuario, related_name='Familiar')
+    parentesco = models.ForeignKey(Tipo_parentesco, on_delete=models.CASCADE)
+
+    def Paciente(self):
+        return "\n".join([str(p.id) for p in self.paciente.all()]) + "\n" + " " .join([p.username for p in self.paciente.all()])
+
+    def Familiar(self):
+        return "\n".join([str(p.id) for p in self.familiar.all()]) + "\n" + " " .join([p.username for p in self.familiar.all()])
     
     def __str__(self):
         return str(self.id_familiar_paciente)
@@ -145,16 +136,6 @@ class Intensidad(models.Model):
     
     def __str__(self):
         return str(self.id_intensidad)
-#PACIENTE_DOCUMENTO
-class Paciente_documento(models.Model):
-    id_paciente_documento = models.AutoField(primary_key=True)
-    autorizado = models.CharField(max_length=100)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    documento_id = models.CharField(max_length=100)
-    id_paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return str(self.id_paciente_documento)
 #APP DOCUMENTO
 class App_documento(models.Model):
     id_app_documento = models.AutoField(primary_key=True)
