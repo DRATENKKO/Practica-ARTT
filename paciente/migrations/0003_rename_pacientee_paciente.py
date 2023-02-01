@@ -7,7 +7,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0024_delete_paciente'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('paciente', '0002_pacientee'),
     ]

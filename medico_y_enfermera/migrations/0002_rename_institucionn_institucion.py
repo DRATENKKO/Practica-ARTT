@@ -6,7 +6,6 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0031_alter_profesional_paciente_id_profesional_salud_and_more'),
         ('medico_y_enfermera', '0001_initial'),
     ]
 
