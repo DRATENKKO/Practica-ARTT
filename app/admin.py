@@ -36,12 +36,6 @@ class JuegoAdmin(admin.ModelAdmin):
 class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]
 
-class TriviaAdmin(admin.ModelAdmin):
-    list_display = ["id_trivia","user", "ordinal","pregunta_trivia", "respuesta_trivia"]
-
-class Sopa_letrasAdmin(admin.ModelAdmin):
-    list_display = ["id_sopa","user","pregunta_sopa", "word","direction", "start"]
-
 class RegionAdmin(admin.ModelAdmin):
     list_display = ["id_region", "nombre_region"]
 
@@ -72,8 +66,6 @@ admin.site.register(Usuario,UserAdmin)
 admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 #GALLERY
 admin.site.register(gallery,galleryAdmin)
-#TRIVIA
-admin.site.register(Trivia,TriviaAdmin)
 #REGION
 admin.site.register(Region,RegionAdmin)
 #PROVINCIA
@@ -86,5 +78,3 @@ admin.site.register(App_documento,App_documentoAdmin)
 admin.site.register(Vocalizacion,VocalizacionAdmin)
 #AUDIO
 admin.site.register(Audio,AudioAdmin)
-#SOPA DE LETRAS
-admin.site.register(Sopa_letras,Sopa_letrasAdmin)

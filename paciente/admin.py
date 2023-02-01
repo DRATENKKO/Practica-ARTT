@@ -1,7 +1,5 @@
 from django.contrib import admin
 from .models import *
-# Register your models here.
-
 class HipertensionAdmin(admin.ModelAdmin):
     list_display = ["id_hipertension", "estado_hipertension"]
 
@@ -35,14 +33,25 @@ class Tipo_parentescoAdmin(admin.ModelAdmin):
 class Familiar_pacienteAdmin(admin.ModelAdmin):
     list_display = ["Paciente","Familiar","parentesco"]
 
+#HIPERTENSION
 admin.site.register(Hipertension,HipertensionAdmin)
+#DIABETES
 admin.site.register(Diabetes,DiabetesAdmin)
+#PACIENTE
 admin.site.register(Paciente,PacienteAdmin)
+#PACIENTE DOCUMENTO
 admin.site.register(Paciente_documento,Paciente_documentoAdmin)
+#APP TIPO TERAPIA
 admin.site.register(App_tipo_terapia,App_tipo_terapiaAdmin)
+#TERAPIA
 admin.site.register(Terapia,TerapiaAdmin)
+#RECORDATORIO TERAPIA
 admin.site.register(Recordatorio_terapia,Recordatorio_terapiaAdmin)
+#INTENSIDAD
 admin.site.register(Intensidad,IntensidadAdmin)
+#FAMILIAR
 admin.site.register(Familiar,FamiliarAdmin)
+#TIPO PARENTESCO
 admin.site.register(Tipo_parentesco,Tipo_parentescoAdmin)
+#FAMILIAR PACIENTE
 admin.site.register(Familiar_paciente,Familiar_pacienteAdmin)

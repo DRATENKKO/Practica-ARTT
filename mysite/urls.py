@@ -11,6 +11,8 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('paciente.urls')),
     path('', include('medico_y_enfermera.urls')),
+    path('', include('tipologias.urls')),
+    path('', include('juegos.urls')),
 ]
 
 if settings.DEBUG:
