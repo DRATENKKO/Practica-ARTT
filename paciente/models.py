@@ -81,3 +81,36 @@ class Intensidad(models.Model):
     
     def __str__(self):
         return str(self.id_intensidad)
+    
+#FAMILIAR
+class Familiar(models.Model):
+    id_familiar = models.AutoField(primary_key=True)
+    rut_familiar = models.CharField(max_length=100)
+    user = models.ForeignKey(to="app.usuario", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return str(self.id_familiar)
+
+#TIPO_PARENTESCO
+class Tipo_parentesco(models.Model):
+    id_tipo_parentesco = models.AutoField(primary_key=True)
+    parentesco = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return str(self.id_tipo_parentesco) + " " + self.parentesco
+
+#FAMILIAR_PACIENTE
+class Familiar_paciente(models.Model):
+    id_familiar_paciente = models.AutoField(primary_key=True)
+    paciente = models.ManyToManyField(to="app.usuario", related_name='Paciente')
+    familiar = models.ManyToManyField(to="app.usuario", related_name='Familiar')
+    parentesco = models.ForeignKey(Tipo_parentesco, on_delete=models.CASCADE)
+
+    def Paciente(self):
+        return "\n".join([str(p.id) for p in self.paciente.all()]) + "\n" + " " .join([p.username for p in self.paciente.all()])
+
+    def Familiar(self):
+        return "\n".join([str(p.id) for p in self.familiar.all()]) + "\n" + " " .join([p.username for p in self.familiar.all()])
+    
+    def __str__(self):
+        return str(self.id_familiar_paciente)

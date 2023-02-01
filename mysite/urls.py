@@ -10,6 +10,7 @@ urlpatterns = [
     path('', include('app.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('paciente.urls')),
+    path('', include('medico_y_enfermera.urls')),
 ]
 
 if settings.DEBUG:

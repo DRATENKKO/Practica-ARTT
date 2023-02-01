@@ -1,0 +1,28 @@
+from django.contrib import admin
+from .models import *
+# Register your models here.
+class InstitucionAdmin(admin.ModelAdmin):
+    list_display = ["id_institucion", "nombre_institucion", "descripcion_institucion", "id_comuna"]
+
+class Profesional_saludAdmin(admin.ModelAdmin):
+    list_display = ["id_profesional_salud", "rut_profesional_salud", "id_institucion", "user"]
+
+class Profesional_pacienteAdmin(admin.ModelAdmin):
+    list_display = ["id_profesional_paciente", "descripcion", "id_profesional_salud","id_paciente"]
+
+class App_enfermera_pacienteAdmin(admin.ModelAdmin):
+    list_display = ["id_app_enfermera_paciente", "username_enfermera", "username_paciente"]
+
+class EnfermeraAdmin(admin.ModelAdmin):
+    list_display = ["id_enfermera", "rut_enfermera", "nombre_enfermera", "apellido_enfermera", "direccion_enfermera", "correo_enfermera", "telefono_enfermera","whatsapp_enfermera","telegram_enfermera","celular_enfermera"]
+
+class App_enfermera_neurologoAdmin(admin.ModelAdmin):
+    list_display = ["id_app_enfermera_neurologo", "username_enfermera", "username_neurologo"]
+
+#INSTITUCION
+admin.site.register(Institucion,InstitucionAdmin)
+admin.site.register(Profesional_salud,Profesional_saludAdmin)
+admin.site.register(Profesional_paciente,Profesional_pacienteAdmin)
+admin.site.register(App_enfermera_paciente,App_enfermera_pacienteAdmin)
+admin.site.register(Enfermera,EnfermeraAdmin)
+admin.site.register(App_enfermera_neurologo,App_enfermera_neurologoAdmin)

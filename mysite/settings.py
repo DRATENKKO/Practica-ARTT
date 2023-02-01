@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'colorfield',
     'crispy_forms',
     'app',
+    'medico_y_enfermera',
     'paciente',
 ]
 
