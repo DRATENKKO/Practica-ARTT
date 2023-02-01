@@ -6,33 +6,33 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.crypto import get_random_string
 
 
-class Resultado_Form(forms.ModelForm):
+# class Resultado_Form(forms.ModelForm):
 
     
-    Resultado_1 = forms.CharField(label='Cantidad de aciertos', widget=forms.TextInput(
-        attrs={
+#     Resultado_1 = forms.CharField(label='Cantidad de aciertos', widget=forms.TextInput(
+#         attrs={
 
-            'placeholder': 'Ingresa cantidad de aciertos',
-            'id': 'total_acierto'
-        }))
+#             'placeholder': 'Ingresa cantidad de aciertos',
+#             'id': 'total_acierto'
+#         }))
 
-    Resultado_2 = forms.CharField(label='Cantidad de tiempo', widget=forms.TextInput(
-        attrs={
+#     Resultado_2 = forms.CharField(label='Cantidad de tiempo', widget=forms.TextInput(
+#         attrs={
 
-            'placeholder': 'Ingresa cantidad de tiempo',
-            'id': 'total_tiempo'
-        }))
+#             'placeholder': 'Ingresa cantidad de tiempo',
+#             'id': 'total_tiempo'
+#         }))
 
-    Resultado_3 = forms.CharField(label='Cantidad de movimientos', widget=forms.TextInput(
-        attrs={
+#     Resultado_3 = forms.CharField(label='Cantidad de movimientos', widget=forms.TextInput(
+#         attrs={
 
-            'placeholder': 'Ingresa cantidad de movimientos',
-            'id': 'total_movimientos'
-        }))
+#             'placeholder': 'Ingresa cantidad de movimientos',
+#             'id': 'total_movimientos'
+#         }))
 
-    class Meta:
-        model = Resultado_juego
-        fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
+#     class Meta:
+#         model = Resultado_juego
+#         fields = 'Resultado_1', 'Resultado_2', 'Resultado_3'
 
 class CustomUserChangeForm(forms.ModelForm):
     
@@ -142,19 +142,6 @@ class FormaRegistro(forms.ModelForm):
             raise forms.ValidationError("Las contraseñas no coinciden")
 
         return password2
-
-
-# ['username', 'password1','first_name', 'last_name','email','id_telegram',]
-
-    # id_usuario = models.AutoField(primary_key=True)
-    # #password = models.CharField(max_length=100)
-    # #username = models.CharField(max_length=100)
-    # #first_name = models.CharField(max_length=100)
-    # #last_name = models.CharField(max_length=100)
-    ## email = models.CharField(max_length=100)
-    # #id_telegram = models.CharField(max_length=100)
-    # id_tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete=models.CASCADE)
-
 
 # class MemoriceForm(forms.ModelForm):
 #     acierto = forms.CharField(label='Cantidad de aciertos', widget=forms.TextInput(

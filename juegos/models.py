@@ -33,3 +33,17 @@ class Juego(models.Model):
 
     def __str__(self):
         return str(self.descripcion)
+
+#RESULTADO JUEGO
+class Resultado_juego(models.Model):
+    id_resultado = models.AutoField(primary_key=True)
+    resultado_1 = models.CharField(max_length=100)
+    resultado_2 = models.CharField(max_length=100)
+    resultado_3 = models.CharField(max_length=100)
+    resultado_4 = models.CharField(max_length=100, blank=True, null=True)
+    resultado_5 = models.CharField(max_length=100, blank=True, null=True)
+    id_usuario = models.ForeignKey(to="app.usuario", on_delete=models.CASCADE, null=True, blank=True)
+    timestampp = models.DateTimeField(auto_now_add=True)
+    id_juego = models.ForeignKey(Juego, on_delete=models.CASCADE , null=True)
+    def __str__(self):
+        return str(self.id_usuario)

@@ -18,12 +18,6 @@ class UserAdmin(BaseUserAdmin):
     )
     list_display = ("username","id", "email", "first_name", "last_name", "is_staff")
 
-
-class Resultado_juegoAdmin(admin.ModelAdmin):
-    list_display = ["id_resultado","id_usuario", "id_juego",
-                    "resultado_1", "resultado_2", "resultado_3",
-                    "resultado_4", "resultado_5","timestampp"]
-
 class galleryAdmin(admin.ModelAdmin):
     list_display = ["id", "image", "user","timestamp"]
 
@@ -56,8 +50,6 @@ class AudioAdmin(admin.ModelAdmin):
 
 #TIPO JUEGO
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
-#RESULTADO JUEGO
-admin.site.register(Resultado_juego,Resultado_juegoAdmin)
 #USUARIO
 admin.site.register(Usuario,UserAdmin)
 #TIPO USUARIO
