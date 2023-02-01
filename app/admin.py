@@ -56,8 +56,6 @@ class AudioAdmin(admin.ModelAdmin):
 
 #TIPO JUEGO
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
-#JUEGO
-admin.site.register(Juego,JuegoAdmin)
 #RESULTADO JUEGO
 admin.site.register(Resultado_juego,Resultado_juegoAdmin)
 #USUARIO

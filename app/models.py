@@ -3,6 +3,8 @@ from django.contrib.auth.models import  AbstractUser, UserManager
 from django.db import models
 from paciente.models import *
 from medico_y_enfermera.models import *
+from juegos.models import *
+from tipologias.models import *
 #REGION
 class Region(models.Model):
     id_region = models.AutoField(primary_key=True)
@@ -127,15 +129,6 @@ class Audio(models.Model):
     
     def __str__(self):
         return str(self.id_audio)
-#JUEGO
-class Juego(models.Model):
-    id = models.AutoField(primary_key=True)
-    descripcion = models.CharField(max_length=100)
-    id_tipo_juego = models.ForeignKey(Tipo_juego, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.descripcion)
-    
 #RESULTADO JUEGO
 class Resultado_juego(models.Model):
     id_resultado = models.AutoField(primary_key=True)
