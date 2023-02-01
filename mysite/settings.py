@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'app',
     'medico_y_enfermera',
     'paciente',
+    'tipologias',
+    'juegos',
 ]
 
 #LOGINBYPASS

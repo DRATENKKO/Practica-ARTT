@@ -18,12 +18,6 @@ class UserAdmin(BaseUserAdmin):
     )
     list_display = ("username","id", "email", "first_name", "last_name", "is_staff")
 
-
-class Resultado_juegoAdmin(admin.ModelAdmin):
-    list_display = ["id_resultado","id_usuario", "id_juego",
-                    "resultado_1", "resultado_2", "resultado_3",
-                    "resultado_4", "resultado_5","timestampp"]
-
 class galleryAdmin(admin.ModelAdmin):
     list_display = ["id", "image", "user","timestamp"]
 
@@ -35,12 +29,6 @@ class JuegoAdmin(admin.ModelAdmin):
 
 class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]
-
-class TriviaAdmin(admin.ModelAdmin):
-    list_display = ["id_trivia","user", "ordinal","pregunta_trivia", "respuesta_trivia"]
-
-class Sopa_letrasAdmin(admin.ModelAdmin):
-    list_display = ["id_sopa","user","pregunta_sopa", "word","direction", "start"]
 
 class RegionAdmin(admin.ModelAdmin):
     list_display = ["id_region", "nombre_region"]
@@ -62,18 +50,12 @@ class AudioAdmin(admin.ModelAdmin):
 
 #TIPO JUEGO
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
-#JUEGO
-admin.site.register(Juego,JuegoAdmin)
-#RESULTADO JUEGO
-admin.site.register(Resultado_juego,Resultado_juegoAdmin)
 #USUARIO
 admin.site.register(Usuario,UserAdmin)
 #TIPO USUARIO
 admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 #GALLERY
 admin.site.register(gallery,galleryAdmin)
-#TRIVIA
-admin.site.register(Trivia,TriviaAdmin)
 #REGION
 admin.site.register(Region,RegionAdmin)
 #PROVINCIA
@@ -86,5 +68,3 @@ admin.site.register(App_documento,App_documentoAdmin)
 admin.site.register(Vocalizacion,VocalizacionAdmin)
 #AUDIO
 admin.site.register(Audio,AudioAdmin)
-#SOPA DE LETRAS
-admin.site.register(Sopa_letras,Sopa_letrasAdmin)
