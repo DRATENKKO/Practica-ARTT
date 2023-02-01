@@ -42,9 +42,6 @@ class TriviaAdmin(admin.ModelAdmin):
 class Sopa_letrasAdmin(admin.ModelAdmin):
     list_display = ["id_sopa","user","pregunta_sopa", "word","direction", "start"]
 
-class TerapistaAdmin(admin.ModelAdmin):
-    list_display = ["id_enfermera", "rut_enfermera", "nombre_enfermera", "apellido_enfermera", "direccion_enfermera", "correo_enfermera", "telefono_enfermera","whatsapp_enfermera","telegram_enfermera","celular_enfermera"]
-
 class RegionAdmin(admin.ModelAdmin):
     list_display = ["id_region", "nombre_region"]
 
@@ -54,43 +51,15 @@ class ProvinciaAdmin(admin.ModelAdmin):
 class ComunaAdmin(admin.ModelAdmin):
     list_display = ["id_comuna", "nombre_comuna", "id_provincia"]
 
-class InstitucionAdmin(admin.ModelAdmin):
-    list_display = ["id_institucion", "nombre_institucion", "descripcion_institucion", "id_comuna"]
-
-class FamiliarAdmin(admin.ModelAdmin):
-    list_display = ["id_familiar", "rut_familiar", "user"]
-
-class Familiar_pacienteAdmin(admin.ModelAdmin):
-    list_display = ["Paciente","Familiar","parentesco"]
-
-
 class App_documentoAdmin(admin.ModelAdmin):
     list_display = ["id_app_documento", "titulo", "documento","descripcion","qr"]
 
 class VocalizacionAdmin(admin.ModelAdmin):
     list_display = ["id_vocalizacion", "timestamp","url_archivo_vocalizacion","duracion","bpminute","bpmeasure","comentario","Paciente"]
 
-class App_enfermera_neurologoAdmin(admin.ModelAdmin):
-    list_display = ["id_app_enfermera_neurologo", "username_enfermera", "username_neurologo"]
-
-class App_enfermera_pacienteAdmin(admin.ModelAdmin):
-    list_display = ["id_app_enfermera_paciente", "username_enfermera", "username_paciente"]
-
-
 class AudioAdmin(admin.ModelAdmin):
     list_display = ["id_audio", "timestamp","url_archivo_audio","jitter_ppq5","jitter_rap","maximum_pitch","error_jitter_ppq5","error_jitter_rap","error_maximum_pitch","jitter_ppq5_IA","jitter_rap_IA","maximum_pitch_IA","error_jitter_ppq5_IA","error_jitter_rap_IA","error_maximum_pitch_IA","id_paciente"]
 
-class Profesional_saludAdmin(admin.ModelAdmin):
-    list_display = ["id_profesional_salud", "rut_profesional_salud", "id_institucion", "user"]
-
-class Profesional_pacienteAdmin(admin.ModelAdmin):
-    list_display = ["id_profesional_paciente", "descripcion", "id_profesional_salud","id_paciente"]
-
-class Tipo_parentescoAdmin(admin.ModelAdmin):
-    list_display = ["id_tipo_parentesco", "parentesco"]
-
-#TIPO PARENTESCO
-admin.site.register(Tipo_parentesco,Tipo_parentescoAdmin)
 #TIPO JUEGO
 admin.site.register(Tipo_juego,Tipo_juegoAdmin)
 #JUEGO
@@ -101,8 +70,6 @@ admin.site.register(Resultado_juego,Resultado_juegoAdmin)
 admin.site.register(Usuario,UserAdmin)
 #TIPO USUARIO
 admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
-#TERAPISTA
-admin.site.register(Terapista,TerapistaAdmin)
 #GALLERY
 admin.site.register(gallery,galleryAdmin)
 #TRIVIA
@@ -113,25 +80,11 @@ admin.site.register(Region,RegionAdmin)
 admin.site.register(Provincia,ProvinciaAdmin)
 #COMUNA
 admin.site.register(Comuna,ComunaAdmin)
-#INSTITUCION
-admin.site.register(Institucion,InstitucionAdmin)
-#FAMILIAR
-admin.site.register(Familiar,FamiliarAdmin)
-#FAMILIAR PACIENTE
-admin.site.register(Familiar_paciente,Familiar_pacienteAdmin)
 #APP DOCUMENTO
 admin.site.register(App_documento,App_documentoAdmin)
 #VOCALIZACION
 admin.site.register(Vocalizacion,VocalizacionAdmin)
-#APP ENFERMERA NEUROLOGO
-admin.site.register(App_enfermera_neurologo,App_enfermera_neurologoAdmin)
-#APP ENFERMERA PACIENTE
-admin.site.register(App_enfermera_paciente,App_enfermera_pacienteAdmin)
 #AUDIO
 admin.site.register(Audio,AudioAdmin)
-#PROFESIONAL SALUD
-admin.site.register(Profesional_salud,Profesional_saludAdmin)
-#PROFESIONAL PACIENTE
-admin.site.register(Profesional_paciente,Profesional_pacienteAdmin)
 #SOPA DE LETRAS
 admin.site.register(Sopa_letras,Sopa_letrasAdmin)
