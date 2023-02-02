@@ -1,4 +1,5 @@
 from django.db import models
+from tipologias.models import *
 # Create your models here.
 
 #INSTITUCION
@@ -6,7 +7,7 @@ class Institucion(models.Model):
     id_institucion = models.AutoField(primary_key=True)
     nombre_institucion = models.CharField(max_length=100)
     descripcion_institucion = models.CharField(max_length=100)
-    # id_comuna = models.ForeignKey(to="app.comuna", on_delete=models.CASCADE)
+    id_comuna = models.ForeignKey(Comuna, on_delete=models.CASCADE)
     
     def __str__(self):
         return str(self.id_institucion)
