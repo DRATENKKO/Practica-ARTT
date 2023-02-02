@@ -5,44 +5,6 @@ from paciente.models import *
 from medico_y_enfermera.models import *
 from juegos.models import *
 from tipologias.models import *
-#REGION
-class Region(models.Model):
-    id_region = models.AutoField(primary_key=True)
-    nombre_region = models.CharField(max_length=100)
-    
-    def __str__(self):
-        return str(self.nombre_region)
-#PROVINCIA
-class Provincia(models.Model):
-    id_provincia = models.AutoField(primary_key=True)
-    nombre_provincia = models.CharField(max_length=100)
-    id_region = models.ForeignKey(Region, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return str(self.nombre_provincia)
-#COMUNA
-class Comuna(models.Model):
-    id_comuna = models.AutoField(primary_key=True)
-    nombre_comuna = models.CharField(max_length=100)
-    id_provincia = models.ForeignKey(Provincia, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return str(self.nombre_comuna)
-#TIPO DE JUEGO
-class Tipo_juego(models.Model):
-    id_tipo_juego = models.AutoField(primary_key=True)
-    nombre_juego  = models.CharField(max_length=100)
-
-    def __str__(self):
-        return str(self.id_tipo_juego)
-#TIPO USUARIO
-class Tipo_usuario(models.Model):
-    id_tipo_usuario = models.AutoField(primary_key=True)
-    nombre_tipo_usuario = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
-
-    def __str__(self):
-        return str(self.nombre_tipo_usuario)
 #USUARIOMANAGER
 class UsuarioManager(UserManager):
     def create_user(self, username, nombre, apellido, correo, password = None):
@@ -72,7 +34,7 @@ class Usuario(AbstractUser):
     Tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete= models.CASCADE, null=True)
     telefono = models.CharField(max_length=100, null=True, default='+569')
     direccion = models.CharField(max_length=100, null=True,)
-    id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
+    # id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
 
     def nombre_area(self):
         return "{}, {}, {}". format(str(self.id), self.username, self.Tipo_usuario)

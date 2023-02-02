@@ -7,7 +7,7 @@ class TriviaAdmin(admin.ModelAdmin):
     list_display = ["id_trivia","user", "ordinal","pregunta_trivia", "respuesta_trivia"]
 
 class JuegoAdmin(admin.ModelAdmin):
-    list_display = ["id","descripcion", "id_tipo_juego"]
+    list_display = ["id","descripcion"]
 
 class Resultado_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_resultado","id_usuario", "id_juego",
