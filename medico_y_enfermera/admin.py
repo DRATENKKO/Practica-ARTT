@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 class InstitucionAdmin(admin.ModelAdmin):
-    list_display = ["id_institucion", "nombre_institucion", "descripcion_institucion", "id_comuna"]
+    list_display = ["id_institucion", "nombre_institucion", "descripcion_institucion"]
 
 class Profesional_saludAdmin(admin.ModelAdmin):
     list_display = ["id_profesional_salud", "rut_profesional_salud", "id_institucion", "user"]

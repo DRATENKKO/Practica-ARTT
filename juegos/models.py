@@ -29,7 +29,7 @@ class Trivia(models.Model):
 class Juego(models.Model):
     id = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
-    id_tipo_juego = models.ForeignKey(to="app.tipo_juego", on_delete=models.CASCADE)
+    id_tipo_juego = models.ForeignKey(to="tipologias.tipo_juego", on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.descripcion)

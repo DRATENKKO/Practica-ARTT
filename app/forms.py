@@ -98,7 +98,7 @@ class CustomUserCreationForm(forms.ModelForm):
         }))
     class Meta:
         model = Usuario
-        fields = 'username', 'first_name', 'last_name', 'email', 'id_telegram','telefono','direccion','id_comuna', 'password'
+        fields = 'username', 'first_name', 'last_name', 'email', 'id_telegram','telefono','direccion', 'password'
 
     def clean_password(self):
         """ validacion de contraseña
