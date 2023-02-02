@@ -30,11 +30,6 @@ class JuegoAdmin(admin.ModelAdmin):
 class Tipo_juegoAdmin(admin.ModelAdmin):
     list_display = ["id_tipo_juego", "nombre_juego"]
 
-class RegionAdmin(admin.ModelAdmin):
-    list_display = ["id_region", "nombre_region"]
-
-class ProvinciaAdmin(admin.ModelAdmin):
-    list_display = ["id_provincia", "nombre_provincia", "id_region"]
 
 class ComunaAdmin(admin.ModelAdmin):
     list_display = ["id_comuna", "nombre_comuna", "id_provincia"]
@@ -56,10 +51,6 @@ admin.site.register(Usuario,UserAdmin)
 admin.site.register(Tipo_usuario,Tipo_usuarioAdmin)
 #GALLERY
 admin.site.register(gallery,galleryAdmin)
-#REGION
-admin.site.register(Region,RegionAdmin)
-#PROVINCIA
-admin.site.register(Provincia,ProvinciaAdmin)
 #COMUNA
 admin.site.register(Comuna,ComunaAdmin)
 #APP DOCUMENTO
