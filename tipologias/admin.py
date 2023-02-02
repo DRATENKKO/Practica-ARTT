@@ -10,10 +10,16 @@ class Tipo_usuarioAdmin(admin.ModelAdmin):
 class ComunaAdmin(admin.ModelAdmin):
     list_display = ["id_comuna", "nombre_comuna", ]
 
+class RegionAdmin(admin.ModelAdmin):
+    list_display = ["id_region", "nombre_region", ]
+
+class ProvinciaAdmin(admin.ModelAdmin):
+    list_display = ["id_provincia", "nombre_provincia", "id_region"]
+
 #REGION
-admin.site.register(Region)
+admin.site.register(Region,RegionAdmin)
 #PROVINCIA
-admin.site.register(Provincia)
+admin.site.register(Provincia,ProvinciaAdmin)
 #COMUNA
 admin.site.register(Comuna,ComunaAdmin)
 #TIPO DE JUEGO

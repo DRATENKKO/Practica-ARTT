@@ -34,7 +34,7 @@ class Usuario(AbstractUser):
     Tipo_usuario = models.ForeignKey(Tipo_usuario, on_delete= models.CASCADE, null=True)
     telefono = models.CharField(max_length=100, null=True, default='+569')
     direccion = models.CharField(max_length=100, null=True,)
-    # id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
+    id_comuna = models.ForeignKey(Comuna, on_delete= models.CASCADE, null=True)
 
     def nombre_area(self):
         return "{}, {}, {}". format(str(self.id), self.username, self.Tipo_usuario)
