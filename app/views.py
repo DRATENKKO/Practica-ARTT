@@ -32,6 +32,9 @@ def api(request):
         pass
     return JsonResponse({'names': names})
 
+def dashboard(request):
+    return render(request, 'app/dashboard.html')
+
 def grilla8x8(request):
     data = {
         'form': MemoriceForm,
