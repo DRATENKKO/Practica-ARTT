@@ -16,7 +16,7 @@ class UserAdmin(BaseUserAdmin):
             
         }),
     )
-    list_display = ("username","id", "email", "first_name", "last_name", "is_staff")
+    list_display = ('username','id','Tipo_usuario', 'first_name', 'last_name', 'email', 'id_telegram','telefono','direccion', 'password')
 
 class galleryAdmin(admin.ModelAdmin):
     list_display = ["id", "image", "user","timestamp"]

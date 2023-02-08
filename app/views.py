@@ -16,6 +16,9 @@ from rest_framework.decorators import api_view
 import json
 from django.contrib.auth import get_user
 from django.contrib.auth.models import User
+from datetime import timedelta
+from django.utils import timezone
+import datetime
 
 # CREACION DE VISTAS
 
@@ -65,6 +68,21 @@ def crucigrama(request):
         }
     return render(request,'app/crucigrama.html', data)
 
+def dashboard(request):
+    total_usuarios = Usuario.objects.count()
+    ahora = timezone.now()
+    usuarios_ayer = Usuario.objects.filter(last_login__gte=ahora-timedelta(days=1)).count()
+    usuarios_ultima_semana = []
+    for i in range(7):
+        usuarios_dia = Usuario.objects.filter(last_login__gte=ahora-timedelta(days=i+1)).count()
+        usuarios_ultima_semana.append(usuarios_dia)
+    context = {
+        'total_usuarios': total_usuarios,
+        'usuarios_ayer': usuarios_ayer,
+        'usuarios_ultima_semana': usuarios_ultima_semana,
+    }
+    
+    return render(request, 'app/dashboard.html', context)
 
 def index(request):
     return render(request, 'app/index.html')
