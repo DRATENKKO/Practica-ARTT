@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'chartjs',
     'livereload',
     'django.contrib.staticfiles',
     'colorfield',
@@ -49,6 +50,19 @@ INSTALLED_APPS = [
     'tipologias',
     'juegos',
 ]
+
+LIBRARY = {
+    'chartjs': {
+        'js': [
+            'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js',
+        ],
+        'css': {
+            'all': [
+                'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css',
+            ]
+        }
+    }
+}
 
 #LOGINBYPASS
 LOGIN_REDIRECT_URL='index'

@@ -36,17 +36,17 @@
                         <li>
                             <a href=""> Hola {{user.username}}</a>
                         </li>
-                        <li class="current">
-                            <a href="{% url 'logout' %}">Cerrar Sesion</a>
-                        </li>
                         {% if user.is_superuser %}
-                        <li><a href="">{{user.username}}</a>
+                        <li><a href="">Panel admin</a>
                             <ul>
                                 <li><a href="{% url 'admin:index' %}">Admin Django</a></li>
-                                <li><a href="{% url 'crucigrama' %}">Dashboard</a></li>
+                                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                             </ul>
                         </li>
                         {% endif %}
+                        <li class="current">
+                            <a href="{% url 'logout' %}">Cerrar Sesion</a>
+                        </li>
                         {% else %}
                         <li class="current">
                             <a href="{% url 'login' %}">Iniciar sesión</a>
@@ -93,6 +93,7 @@
     <script type="text/javascript" src="{% static 'app/js/breakpoints.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'app/js/util.js' %}"></script>
     <script type="text/javascript" src="{% static 'app/js/main.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 
     {% block js%}
     {% endblock %}
