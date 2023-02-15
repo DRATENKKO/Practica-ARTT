@@ -62,6 +62,11 @@ for (var i = 6; i >= 0; i--) {
                 fontSize: 36
             },
             scales: {
+                xAxes: [{
+                    ticks: {
+                    fontSize: 20
+                    }
+                    }],
                 yAxes: [{
                     ticks: {
                         beginAtZero: false,
@@ -69,7 +74,16 @@ for (var i = 6; i >= 0; i--) {
                         max: 5,
                         fontSize: 20
                     }
-                }]
+                }],
+                plugins: [{
+                    labels: {
+                        render: 'value',
+                        fontSize: 36,
+                        fontColor: '#000',
+                        fontFamily: "'Arial', sans-serif",
+                        position: 'outside'
+                    }
+                }],
             },
             elements: {
                 line: {
@@ -79,6 +93,7 @@ for (var i = 6; i >= 0; i--) {
             }
         }
     });
+    
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 {% endblock %}
